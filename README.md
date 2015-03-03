@@ -1,2 +1,10 @@
-# grado_informatica-DSD
-Prácticas de la asignatura Desarrollo de Sistemas Distribuidos de la UGR 
+# Diseño y Desarrollo de Sistemas Distribuidos #
+
+### Datos ###
+
+* Prácticas de la asignatura Diseño y Desarrollo de Sistemas Distribuidos
+* Versión 0.1
+
+### Autores ###
+
+* Francisco Javier Bolívar Lupiáñez
