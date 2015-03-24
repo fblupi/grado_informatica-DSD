@@ -6,120 +6,14 @@
 
 #include "asociacion.h"
 
-DiccionaioPtr root = NULL;
-
 Estado *
 ponerasociacion_1_svc(ID arg1, Clave arg2, Valor arg3,  struct svc_req *rqstp)
 {
 	static Estado  result;
 
-	if(root==NULL) { // No hay ningún diccionario
-		// Nueva entrada
-		EntradaPtr ent = (EntradaPtr)malloc(sizeof(Entrada));
-		ent->clave = arg2;
-		ent->valor = arg3;
-		ent->sig = NULL;
-		// Nuevo diccionario
-		DiccionarioPtr dic = (DiccionarioPtr)malloc(sizeof(Diccionario));  
-		dic->id = arg1;
-		dic->sig = NULL;
-		dic->first = ent;
-		result = OK;
-	} else { // Hay algún diccionario
-		DiccionarioPtr dicPtr = root;
-		BOOL encontradoID = FALSE;
-		if(dicPtr->id==arg1) {
-			encontradoID = TRUE;
-		}
-		while(encontradoID==FALSE && dicPtr->sig==NULL) { // Buscar diccionario
-			dicPtr=dicPtr->sig;
-			if(dicPtr->id==arg1) {
-				encontradoID = TRUE;
-			}
-		}
-		if(encontradoID==TRUE) { // Diccionario encontrado
-			EntradaPtr entPtr = dicPtr->first;
-			BOOL encontradoClave = FALSE;
-			if(entPtr->valor==arg2) {
-				encontradoClave = TRUE;
-			}
-			while(encontradoClave==FALSE && entPtr->sig==NULL) { // Buscar entrada
-				entPtr=entPtr->sig;
-				if(entPtr->id==arg2) {
-					encontradoClave = TRUE;
-				}
-			}
-			if(encontradoClave==TRUE) { // Clave encontrada
-				entPtr->valor = arg3;
-				result = REEMPLAZADO;
-			} else { //  Clave no encontrada
-				// Nueva entrada
-				EntradaPtr ent = (EntradaPtr)malloc(sizeof(Entrada));
-				ent->clave = arg2;
-				ent->valor = arg3;
-				ent->sig = NULL;
-				entPtr->sig=ent;
-				result = OK;
-			}
-		} else { // Diccionario no encontrado -> se crea uno nuevo
-			// Nueva entrada
-			EntradaPtr ent = (EntradaPtr)malloc(sizeof(Entrada));
-			ent->clave = arg2;
-			ent->valor = arg3;
-			ent->sig = NULL;
-			// Nuevo diccionario
-			DiccionarioPtr dicAux = (DiccionarioPtr)malloc(sizeof(Diccionario));  
-			dicAux->id = arg1;
-			dicAux->sig = NULL;
-			dicAux->first = ent;
-			dic->sig = dicAux;
-			result = OK;
-		}
-	}
-
-/*******************************************************************************
-SET
-********************************************************************************
-
-if(root==NULL) {
-	new Entrada entradaNew;
-	entradaNew->clave = arg2;	
-	entradaNew->valor = arg3;
-	entradaNew->sig = null;
-	root->first = entradaNew;
-	root->ID = arg1;
-	root->sig = null;	
-	result = OK;
-} else {
-	encontradoID = BUSCAR ID;
-	if(encontradoID) {
-		encontradoClave = BUSCAR Clave;
-		if(encontradoClave) {
-			entradaPtr->valor = arg3;
-			result = REEMPLAZADO;
-		} else {
-			new Entrada entradaNew;
-			entradaNew->clave = arg2;	
-			entradaNew->valor = arg3;
-			entradaNew->sig = null;
-			entradaPtr->sig = entradaNew;	
-			result = OK;
-		}
-	} else {
-		new Entrada entradaNew;
-		entradaNew->clave = arg2;
-		entradaNew->valor = arg3;
-		entradaNew->sig = null;
-		new Diccionario diccionarioNew;
-		diccionarioNew->id = arg1;
-		diccionarioNew->sig = null;
-		diccionarioNew->first = entradaNew;	
-		diccionarioPtr->sig = diccionarioNew	
-		result = OK;
-	}
-}	 
-
-*******************************************************************************/
+	/*
+	 * insert server code here
+	 */
 
 	return &result;
 }
@@ -129,24 +23,9 @@ obtenerasociacion_1_svc(ID arg1, Clave arg2,  struct svc_req *rqstp)
 {
 	static ResultEntrada  result;
 
-/*******************************************************************************
-GET
-********************************************************************************
-
-encontradoID = BUSCAR ID;
-if(encontradoID) {
-	encontradoClave = BUSCAR Clave;
-	if(encontradoClave) {
-		result->valor = entradaPtr->valor;
-		result->e = OK;
-	} else {	
-		result->e = FALLO;
-	}
-} else {	
-	result->e = FALLO;
-}	
- 
-*******************************************************************************/
+	/*
+	 * insert server code here
+	 */
 
 	return &result;
 }
@@ -156,13 +35,9 @@ borrarasociacion_1_svc(ID arg1, Clave arg2,  struct svc_req *rqstp)
 {
 	static Estado  result;
 
-/*******************************************************************************
-BORRAR
-********************************************************************************
-
- 
-
-*******************************************************************************/
+	/*
+	 * insert server code here
+	 */
 
 	return &result;
 }
@@ -172,19 +47,9 @@ enumerar_1_svc(ID arg1,  struct svc_req *rqstp)
 {
 	static ResultDiccionario  result;
 
-/*******************************************************************************
-ENUMERAR
-********************************************************************************
-
-encontradoID = BUSCAR ID;
-if(encontradoID) {
-	result->entrada = diccinarioPtr->first;
-	result->e = OK;
-} else {	
-	result->e = FALLO;
-}
-	 
-*******************************************************************************/
+	/*
+	 * insert server code here
+	 */
 
 	return &result;
 }

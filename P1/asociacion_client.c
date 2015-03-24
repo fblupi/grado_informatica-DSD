@@ -6,9 +6,10 @@
 
 #include "asociacion.h"
 
+#define TAMA 128
 
 void
-asociacion_1(char *host)
+asociacionprog_1(char *host)
 {
 	CLIENT *clnt;
 	Estado  *result_1;
@@ -25,29 +26,54 @@ asociacion_1(char *host)
 	ID enumerar_1_arg1;
 
 #ifndef	DEBUG
-	clnt = clnt_create (host, ASOCIACION, ASOCIACION, "udp");
+	clnt = clnt_create (host, ASOCIACIONPROG, ASOCIACION, "udp");
 	if (clnt == NULL) {
 		clnt_pcreateerror (host);
 		exit (1);
 	}
 #endif	/* DEBUG */
 
-	result_1 = ponerasociacion_1(ponerasociacion_1_arg1, ponerasociacion_1_arg2, ponerasociacion_1_arg3, clnt);
-	if (result_1 == (Estado *) NULL) {
-		clnt_perror (clnt, "call failed");
+	int opcion;
+	int id;
+	char str[TAMA];
+
+	printf("Seleccione Opcción:\n1.-Insertar asociación\n2.-Obtener asociación\n3.-Borrar asociación\n4.-Enumerar\n5.-Salir\n");
+	scanf("%d",&opcion);
+	while(opcion!=5) {
+		switch(opcion) {
+			case 1:
+				printf("INSERTAR ASOCIACIÓN");
+				printf("Introduzca ID:");
+				scanf("%d",&id);
+				ponerasociacion_1_arg1 = id;
+				//printf("Has escrito %d\n",ponerasociacion_1_arg1);
+				printf("Introduzca Clave:");
+				scanf("%s",str);
+				ponerasociacion_1_arg2 = str;
+				//printf("Has escrito %s\n",ponerasociacion_1_arg2);
+				printf("Introduzca Valor:");
+				scanf("%s",str);
+				ponerasociacion_1_arg3 = str;
+				//printf("Has escrito %s\n",ponerasociacion_1_arg3);
+				result_1 = ponerasociacion_1(ponerasociacion_1_arg1, ponerasociacion_1_arg2, ponerasociacion_1_arg3, clnt);
+				if (result_1 == (Estado *) NULL) {
+					clnt_perror (clnt, "call failed");
+				}
+				break;
+			case 2:
+				break;
+			case 3:
+				break;
+			case 4:
+				break;
+			default:
+				printf("Opción incorrecta. Seleccione Opcción:\n1.-Insertar asociación\n2.-Obtener asociación\n3.-Borrar asociación\n4.-Enumerar\n5.-Salir\n");
+				break;
+		}
+		printf("Seleccione Opcción:\n1.-Insertar asociación\n2.-Obtener asociación\n3.-Borrar asociación\n4.-Enumerar\n5.-Salir\n");
+		scanf("%d",&opcion);
 	}
-	result_2 = obtenerasociacion_1(obtenerasociacion_1_arg1, obtenerasociacion_1_arg2, clnt);
-	if (result_2 == (ResultEntrada *) NULL) {
-		clnt_perror (clnt, "call failed");
-	}
-	result_3 = borrarasociacion_1(borrarasociacion_1_arg1, borrarasociacion_1_arg2, clnt);
-	if (result_3 == (Estado *) NULL) {
-		clnt_perror (clnt, "call failed");
-	}
-	result_4 = enumerar_1(enumerar_1_arg1, clnt);
-	if (result_4 == (ResultDiccionario *) NULL) {
-		clnt_perror (clnt, "call failed");
-	}
+
 #ifndef	DEBUG
 	clnt_destroy (clnt);
 #endif	 /* DEBUG */
@@ -64,6 +90,6 @@ main (int argc, char *argv[])
 		exit (1);
 	}
 	host = argv[1];
-	asociacion_1 (host);
+	asociacionprog_1 (host);
 exit (0);
 }

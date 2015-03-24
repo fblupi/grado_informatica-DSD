@@ -6,26 +6,6 @@
 #include "asociacion.h"
 
 bool_t
-xdr_DiccionarioPtr (XDR *xdrs, DiccionarioPtr *objp)
-{
-	register int32_t *buf;
-
-	 if (!xdr_pointer (xdrs, (char **)objp, sizeof (diccionario), (xdrproc_t) xdr_diccionario))
-		 return FALSE;
-	return TRUE;
-}
-
-bool_t
-xdr_EntradaPtr (XDR *xdrs, EntradaPtr *objp)
-{
-	register int32_t *buf;
-
-	 if (!xdr_pointer (xdrs, (char **)objp, sizeof (entrada), (xdrproc_t) xdr_entrada))
-		 return FALSE;
-	return TRUE;
-}
-
-bool_t
 xdr_ID (XDR *xdrs, ID *objp)
 {
 	register int32_t *buf;
@@ -56,25 +36,31 @@ xdr_Valor (XDR *xdrs, Valor *objp)
 }
 
 bool_t
-xdr_Estado (XDR *xdrs, Estado *objp)
+xdr_EntradaPtr (XDR *xdrs, EntradaPtr *objp)
 {
 	register int32_t *buf;
 
-	 if (!xdr_enum (xdrs, (enum_t *) objp))
+	 if (!xdr_pointer (xdrs, (char **)objp, sizeof (struct Entrada), (xdrproc_t) xdr_Entrada))
 		 return FALSE;
 	return TRUE;
 }
 
 bool_t
-xdr_Diccionario (XDR *xdrs, Diccionario *objp)
+xdr_DiccionarioPtr (XDR *xdrs, DiccionarioPtr *objp)
 {
 	register int32_t *buf;
 
-	 if (!xdr_ID (xdrs, &objp->id))
+	 if (!xdr_pointer (xdrs, (char **)objp, sizeof (struct Diccionario), (xdrproc_t) xdr_Diccionario))
 		 return FALSE;
-	 if (!xdr_diccionarioPtr (xdrs, &objp->sig))
-		 return FALSE;
-	 if (!xdr_entradaPtr (xdrs, &objp->first))
+	return TRUE;
+}
+
+bool_t
+xdr_Estado (XDR *xdrs, Estado *objp)
+{
+	register int32_t *buf;
+
+	 if (!xdr_enum (xdrs, (enum_t *) objp))
 		 return FALSE;
 	return TRUE;
 }
@@ -88,7 +74,21 @@ xdr_Entrada (XDR *xdrs, Entrada *objp)
 		 return FALSE;
 	 if (!xdr_Valor (xdrs, &objp->valor))
 		 return FALSE;
-	 if (!xdr_entradaPtr (xdrs, &objp->sig))
+	 if (!xdr_EntradaPtr (xdrs, &objp->sig))
+		 return FALSE;
+	return TRUE;
+}
+
+bool_t
+xdr_Diccionario (XDR *xdrs, Diccionario *objp)
+{
+	register int32_t *buf;
+
+	 if (!xdr_ID (xdrs, &objp->id))
+		 return FALSE;
+	 if (!xdr_DiccionarioPtr (xdrs, &objp->sig))
+		 return FALSE;
+	 if (!xdr_EntradaPtr (xdrs, &objp->first))
 		 return FALSE;
 	return TRUE;
 }
@@ -105,10 +105,8 @@ xdr_ResultEntrada (XDR *xdrs, ResultEntrada *objp)
 		 if (!xdr_Valor (xdrs, &objp->ResultEntrada_u.valor))
 			 return FALSE;
 		break;
-	case FALLO:
-		break;
 	default:
-		return FALSE;
+		break;
 	}
 	return TRUE;
 }
@@ -125,10 +123,8 @@ xdr_ResultDiccionario (XDR *xdrs, ResultDiccionario *objp)
 		 if (!xdr_Entrada (xdrs, &objp->ResultDiccionario_u.entrada))
 			 return FALSE;
 		break;
-	case FALLO:
-		break;
 	default:
-		return FALSE;
+		break;
 	}
 	return TRUE;
 }

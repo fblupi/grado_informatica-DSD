@@ -41,7 +41,7 @@ _enumerar_1 (ID  *argp, struct svc_req *rqstp)
 }
 
 static void
-asociacion_1(struct svc_req *rqstp, register SVCXPRT *transp)
+asociacionprog_1(struct svc_req *rqstp, register SVCXPRT *transp)
 {
 	union {
 		ponerasociacion_1_argument ponerasociacion_1_arg;
@@ -107,15 +107,15 @@ main (int argc, char **argv)
 {
 	register SVCXPRT *transp;
 
-	pmap_unset (ASOCIACION, ASOCIACION);
+	pmap_unset (ASOCIACIONPROG, ASOCIACION);
 
 	transp = svcudp_create(RPC_ANYSOCK);
 	if (transp == NULL) {
 		fprintf (stderr, "%s", "cannot create udp service.");
 		exit(1);
 	}
-	if (!svc_register(transp, ASOCIACION, ASOCIACION, asociacion_1, IPPROTO_UDP)) {
-		fprintf (stderr, "%s", "unable to register (ASOCIACION, ASOCIACION, udp).");
+	if (!svc_register(transp, ASOCIACIONPROG, ASOCIACION, asociacionprog_1, IPPROTO_UDP)) {
+		fprintf (stderr, "%s", "unable to register (ASOCIACIONPROG, ASOCIACION, udp).");
 		exit(1);
 	}
 
@@ -124,8 +124,8 @@ main (int argc, char **argv)
 		fprintf (stderr, "%s", "cannot create tcp service.");
 		exit(1);
 	}
-	if (!svc_register(transp, ASOCIACION, ASOCIACION, asociacion_1, IPPROTO_TCP)) {
-		fprintf (stderr, "%s", "unable to register (ASOCIACION, ASOCIACION, tcp).");
+	if (!svc_register(transp, ASOCIACIONPROG, ASOCIACION, asociacionprog_1, IPPROTO_TCP)) {
+		fprintf (stderr, "%s", "unable to register (ASOCIACIONPROG, ASOCIACION, tcp).");
 		exit(1);
 	}
 

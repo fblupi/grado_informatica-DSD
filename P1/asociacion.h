@@ -15,15 +15,15 @@ extern "C" {
 
 #define TAMA 128
 
-typedef diccionario *DiccionarioPtr;
-
-typedef entrada *EntradaPtr;
-
 typedef int ID;
 
 typedef char *Clave;
 
 typedef char *Valor;
+
+typedef struct Entrada *EntradaPtr;
+
+typedef struct Diccionario *DiccionarioPtr;
 
 enum Estado {
 	OK = 0,
@@ -32,19 +32,19 @@ enum Estado {
 };
 typedef enum Estado Estado;
 
-struct Diccionario {
-	ID id;
-	diccionarioPtr sig;
-	entradaPtr first;
-};
-typedef struct Diccionario Diccionario;
-
 struct Entrada {
 	Clave clave;
 	Valor valor;
-	entradaPtr sig;
+	EntradaPtr sig;
 };
 typedef struct Entrada Entrada;
+
+struct Diccionario {
+	ID id;
+	DiccionarioPtr sig;
+	EntradaPtr first;
+};
+typedef struct Diccionario Diccionario;
 
 struct ResultEntrada {
 	Estado e;
@@ -81,7 +81,7 @@ struct borrarasociacion_1_argument {
 };
 typedef struct borrarasociacion_1_argument borrarasociacion_1_argument;
 
-#define ASOCIACION 0x20000001
+#define ASOCIACIONPROG 0x20000001
 #define ASOCIACION 1
 
 #if defined(__STDC__) || defined(__cplusplus)
@@ -97,7 +97,7 @@ extern  Estado * borrarasociacion_1_svc(ID , Clave , struct svc_req *);
 #define enumerar 4
 extern  ResultDiccionario * enumerar_1(ID , CLIENT *);
 extern  ResultDiccionario * enumerar_1_svc(ID , struct svc_req *);
-extern int asociacion_1_freeresult (SVCXPRT *, xdrproc_t, caddr_t);
+extern int asociacionprog_1_freeresult (SVCXPRT *, xdrproc_t, caddr_t);
 
 #else /* K&R C */
 #define ponerAsociacion 1
@@ -112,20 +112,20 @@ extern  Estado * borrarasociacion_1_svc();
 #define enumerar 4
 extern  ResultDiccionario * enumerar_1();
 extern  ResultDiccionario * enumerar_1_svc();
-extern int asociacion_1_freeresult ();
+extern int asociacionprog_1_freeresult ();
 #endif /* K&R C */
 
 /* the xdr functions */
 
 #if defined(__STDC__) || defined(__cplusplus)
-extern  bool_t xdr_DiccionarioPtr (XDR *, DiccionarioPtr*);
-extern  bool_t xdr_EntradaPtr (XDR *, EntradaPtr*);
 extern  bool_t xdr_ID (XDR *, ID*);
 extern  bool_t xdr_Clave (XDR *, Clave*);
 extern  bool_t xdr_Valor (XDR *, Valor*);
+extern  bool_t xdr_EntradaPtr (XDR *, EntradaPtr*);
+extern  bool_t xdr_DiccionarioPtr (XDR *, DiccionarioPtr*);
 extern  bool_t xdr_Estado (XDR *, Estado*);
-extern  bool_t xdr_Diccionario (XDR *, Diccionario*);
 extern  bool_t xdr_Entrada (XDR *, Entrada*);
+extern  bool_t xdr_Diccionario (XDR *, Diccionario*);
 extern  bool_t xdr_ResultEntrada (XDR *, ResultEntrada*);
 extern  bool_t xdr_ResultDiccionario (XDR *, ResultDiccionario*);
 extern  bool_t xdr_ponerasociacion_1_argument (XDR *, ponerasociacion_1_argument*);
@@ -133,14 +133,14 @@ extern  bool_t xdr_obtenerasociacion_1_argument (XDR *, obtenerasociacion_1_argu
 extern  bool_t xdr_borrarasociacion_1_argument (XDR *, borrarasociacion_1_argument*);
 
 #else /* K&R C */
-extern bool_t xdr_DiccionarioPtr ();
-extern bool_t xdr_EntradaPtr ();
 extern bool_t xdr_ID ();
 extern bool_t xdr_Clave ();
 extern bool_t xdr_Valor ();
+extern bool_t xdr_EntradaPtr ();
+extern bool_t xdr_DiccionarioPtr ();
 extern bool_t xdr_Estado ();
-extern bool_t xdr_Diccionario ();
 extern bool_t xdr_Entrada ();
+extern bool_t xdr_Diccionario ();
 extern bool_t xdr_ResultEntrada ();
 extern bool_t xdr_ResultDiccionario ();
 extern bool_t xdr_ponerasociacion_1_argument ();
