@@ -11,9 +11,18 @@
 void
 imprimir_resultado_insercion(Estado estado) {
 	if(estado==OK) {
-		printf("Operacion realizada correctamente\n");
+		printf("Entrada insertada correctamente\n\n");
 	} else {
-		printf("Clave ya existente. Reemplazado el valor de esta\n");
+		printf("Clave ya existente. Reemplazado el valor de esta\n\n");
+	}
+}
+
+void
+imprimir_resultado_consulta(ResultEntrada result) {
+	if(result.e==OK) {
+		printf("Valor: %s\n\n",result.ResultEntrada_u.valor);
+	} else {
+		printf("Error. No existe esa clave para ese diccionario\n\n");
 	}
 }
 
@@ -55,7 +64,7 @@ asociacionprog_1(char *host)
 	while(opcion!=5) {
 		switch(opcion) {
 			case 1:
-				printf("INSERTAR ASOCIACIÓN\n");
+				printf("\nINSERTAR ASOCIACIÓN\n");
 				printf("Introduzca ID: ");
 				scanf("%d",&inInt);
 				ponerasociacion_1_arg1 = inInt;
@@ -72,21 +81,22 @@ asociacionprog_1(char *host)
 				}
 				break;
 			case 2:
-				printf("OBTENER ASOCIACIÓN\n");
-				printf("Introduzca ID:");
+				printf("\nOBTENER ASOCIACIÓN\n");
+				printf("Introduzca ID: ");
 				scanf("%d",&inInt);
 				obtenerasociacion_1_arg1 = inInt;
 				printf("Introduzca Clave: ");
 				scanf("%s",inStr);
 				obtenerasociacion_1_arg2 = inStr;
 				result_2 = obtenerasociacion_1(obtenerasociacion_1_arg1, obtenerasociacion_1_arg2, clnt);
+				imprimir_resultado_consulta(*result_2);
 				if (result_2 == (ResultEntrada *) NULL) {
 					clnt_perror (clnt, "call failed");
 				}
 				break;
 			case 3:
-				printf("BORRAR ASOCIACIÓN\n");
-				printf("Introduzca ID:");
+				printf("\nBORRAR ASOCIACIÓN\n");
+				printf("Introduzca ID: ");
 				scanf("%d",&inInt);
 				borrarasociacion_1_arg1 = inInt;
 				printf("Introduzca Clave: ");
@@ -98,8 +108,8 @@ asociacionprog_1(char *host)
 				}
 				break;
 			case 4:
-				printf("ENUMERAR DICCIONARIO\n");
-				printf("Introduzca ID:");
+				printf("\nENUMERAR DICCIONARIO\n");
+				printf("Introduzca ID: ");
 				scanf("%d",&inInt);
 				enumerar_1_arg1 = inInt;
 				result_4 = enumerar_1(enumerar_1_arg1, clnt);

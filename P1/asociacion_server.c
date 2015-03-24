@@ -14,9 +14,9 @@ Estado *
 ponerasociacion_1_svc(ID arg1, Clave arg2, Valor arg3,  struct svc_req *rqstp)
 {
 	printf("\nINSERCION:\n");
-	printf("id: %d\n", arg1);
-	printf("clave: %s\n", arg2);
-	printf("valor: %s\n", arg3);
+	//printf("id: %d\n", arg1);
+	//printf("clave: %s\n", arg2);
+	//printf("valor: %s\n", arg3);
 
 	static Estado  result;
 
@@ -27,9 +27,9 @@ ponerasociacion_1_svc(ID arg1, Clave arg2, Valor arg3,  struct svc_req *rqstp)
 		ent->clave = strdup(arg2);
 		ent->valor = strdup(arg3);
 		ent->sig = NULL;
-		printf("\tEntrada:\n");
-		printf("\t\tclave: %s\n",ent->clave);
-		printf("\t\tvalor: %s\n",ent->valor);
+		//printf("\tEntrada:\n");
+		//printf("\t\tclave: %s\n",ent->clave);
+		//printf("\t\tvalor: %s\n",ent->valor);
 		// Nuevo diccionario
 		DiccionarioPtr dic = (DiccionarioPtr)malloc(sizeof(Diccionario));  
 		dic->id = arg1;
@@ -110,27 +110,53 @@ ponerasociacion_1_svc(ID arg1, Clave arg2, Valor arg3,  struct svc_req *rqstp)
 ResultEntrada *
 obtenerasociacion_1_svc(ID arg1, Clave arg2,  struct svc_req *rqstp)
 {
+	printf("\nCONSULTA:\n");
+
 	static ResultEntrada  result;
 
-/*******************************************************************************
-GET
-********************************************************************************
-
-encontradoID = BUSCAR ID;
-if(encontradoID) {
-	encontradoClave = BUSCAR Clave;
-	if(encontradoClave) {
-		result->valor = entradaPtr->valor;
-		result->e = OK;
-	} else {	
-		result->e = FALLO;
+	if(root==NULL) { // No hay ningún diccionario
+		printf("No hay ningun diccionario\n");
+		result.e = FALLO;
+	} else { // Hay algún diccionario
+		printf("Hay algun diccionario\n");
+		DiccionarioPtr dicPtr = root;
+		bool encontradoID = false;
+		if(dicPtr->id==arg1) {
+			encontradoID = true;
+		}
+		while(encontradoID==false && dicPtr->sig!=NULL) { // Buscar diccionario
+			dicPtr=dicPtr->sig;
+			if(dicPtr->id==arg1) {
+				encontradoID = true;
+			}
+		}
+		if(encontradoID==true) { // Diccionario encontrado
+			printf("Diccionario encontrado\n");
+			EntradaPtr entPtr = dicPtr->first;
+			bool encontradoClave = false;
+			if(strcmp(entPtr->clave,arg2)==0) {
+				encontradoClave = true;
+			}
+			while(encontradoClave==false && entPtr->sig!=NULL) { // Buscar entrada
+				entPtr = entPtr->sig;
+				if(strcmp(entPtr->clave,arg2)==0) {
+					encontradoClave = true;
+				}
+			}
+			if(encontradoClave==true) { // Clave encontrada
+				printf("Clave encontrada\n");
+				result.e = OK;
+				result.ResultEntrada_u.valor = strdup(entPtr->valor);
+			} else { //  Clave no encontrada
+				printf("Clave no encontrada\n");
+				// Nueva entrada
+				result.e = FALLO;
+			}
+		} else { // Diccionario no encontrado -> se crea uno nuevo
+			printf("Diccionario no encontrado\n");
+			result.e = FALLO;
+		}
 	}
-} else {	
-	result->e = FALLO;
-}	
- 
-*******************************************************************************/
-
 
 	return &result;
 }
