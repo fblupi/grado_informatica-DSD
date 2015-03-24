@@ -13,15 +13,23 @@ DiccionarioPtr root = NULL;
 Estado *
 ponerasociacion_1_svc(ID arg1, Clave arg2, Valor arg3,  struct svc_req *rqstp)
 {
+	printf("\nINSERCION:\n");
+	printf("id: %d\n", arg1);
+	printf("clave: %s\n", arg2);
+	printf("valor: %s\n", arg3);
+
 	static Estado  result;
 
 	if(root==NULL) { // No hay ningún diccionario
-		//printf("No hay ningun diccionario\n");
+		printf("No hay ningun diccionario\n");
 		// Nueva entrada
 		EntradaPtr ent = (EntradaPtr)malloc(sizeof(Entrada));
-		ent->clave = arg2;
-		ent->valor = arg3;
+		ent->clave = strdup(arg2);
+		ent->valor = strdup(arg3);
 		ent->sig = NULL;
+		printf("\tEntrada:\n");
+		printf("\t\tclave: %s\n",ent->clave);
+		printf("\t\tvalor: %s\n",ent->valor);
 		// Nuevo diccionario
 		DiccionarioPtr dic = (DiccionarioPtr)malloc(sizeof(Diccionario));  
 		dic->id = arg1;
@@ -30,54 +38,54 @@ ponerasociacion_1_svc(ID arg1, Clave arg2, Valor arg3,  struct svc_req *rqstp)
 		root = dic;
 		result = OK;
 	} else { // Hay algún diccionario
-		//printf("Hay algun diccionario\n");
+		printf("Hay algun diccionario\n");
 		DiccionarioPtr dicPtr = root;
-		//printf("dicPtr = root\n");
 		bool encontradoID = false;
 		if(dicPtr->id==arg1) {
 			encontradoID = true;
 		}
-		//printf("voy a entrar en while\n");
 		while(encontradoID==false && dicPtr->sig!=NULL) { // Buscar diccionario
 			dicPtr=dicPtr->sig;
 			if(dicPtr->id==arg1) {
 				encontradoID = true;
 			}
 		}
-		//printf("salgo while\n");
 		if(encontradoID==true) { // Diccionario encontrado
-			//printf("Diccionario encontrado\n");
+			printf("Diccionario encontrado\n");
 			EntradaPtr entPtr = dicPtr->first;
+			//printf("\tEntrada:\n");
+			//printf("\t\tclave: %s\n", entPtr->clave);
+			//printf("\t\tvalor: %s\n", entPtr->valor);
 			bool encontradoClave = false;
-			if(entPtr->valor==arg2) {
+			if(strcmp(entPtr->clave,arg2)==0) {
 				encontradoClave = true;
 			}
 			while(encontradoClave==false && entPtr->sig!=NULL) { // Buscar entrada
-				entPtr=entPtr->sig;
-				if(entPtr->valor==arg2) {
+				entPtr = entPtr->sig;
+				if(strcmp(entPtr->clave,arg2)==0) {
 					encontradoClave = true;
 				}
 			}
 			if(encontradoClave==true) { // Clave encontrada
-				//printf("Clave encontrada\n");
-				entPtr->valor = arg3;
+				printf("Clave encontrada\n");
+				entPtr->valor = strdup(arg3);
 				result = REEMPLAZADO;
 			} else { //  Clave no encontrada
-				//printf("Clave no encontrada\n");
+				printf("Clave no encontrada\n");
 				// Nueva entrada
 				EntradaPtr ent = (EntradaPtr)malloc(sizeof(Entrada));
-				ent->clave = arg2;
-				ent->valor = arg3;
+				ent->clave = strdup(arg2);
+				ent->valor = strdup(arg3);
 				ent->sig = NULL;
-				entPtr->sig=ent;
+				entPtr->sig = ent;
 				result = OK;
 			}
 		} else { // Diccionario no encontrado -> se crea uno nuevo
-			//printf("Diccionario no encontrado\n");
+			printf("Diccionario no encontrado\n");
 			// Nueva entrada
 			EntradaPtr ent = (EntradaPtr)malloc(sizeof(Entrada));
-			ent->clave = arg2;
-			ent->valor = arg3;
+			ent->clave = strdup(arg2);
+			ent->valor = strdup(arg3);
 			ent->sig = NULL;
 			// Nuevo diccionario
 			DiccionarioPtr dic = (DiccionarioPtr)malloc(sizeof(Diccionario));  
@@ -89,49 +97,12 @@ ponerasociacion_1_svc(ID arg1, Clave arg2, Valor arg3,  struct svc_req *rqstp)
 		}
 	}
 
-/*******************************************************************************
-SET
-********************************************************************************
-
-if(root==NULL) {
-	new Entrada entradaNew;
-	entradaNew->clave = arg2;	
-	entradaNew->valor = arg3;
-	entradaNew->sig = null;
-	root->first = entradaNew;
-	root->ID = arg1;
-	root->sig = null;	
-	result = OK;
-} else {
-	encontradoID = BUSCAR ID;
-	if(encontradoID) {
-		encontradoClave = BUSCAR Clave;
-		if(encontradoClave) {
-			entradaPtr->valor = arg3;
-			result = REEMPLAZADO;
-		} else {
-			new Entrada entradaNew;
-			entradaNew->clave = arg2;	
-			entradaNew->valor = arg3;
-			entradaNew->sig = null;
-			entradaPtr->sig = entradaNew;	
-			result = OK;
-		}
-	} else {
-		new Entrada entradaNew;
-		entradaNew->clave = arg2;
-		entradaNew->valor = arg3;
-		entradaNew->sig = null;
-		new Diccionario diccionarioNew;
-		diccionarioNew->id = arg1;
-		diccionarioNew->sig = null;
-		diccionarioNew->first = entradaNew;	
-		diccionarioPtr->sig = diccionarioNew	
-		result = OK;
+	switch(result) {
+		case OK: printf("OK\n"); break;
+		case REEMPLAZADO: printf("REEMPLAZADO\n"); break;
+		case FALLO: printf("FALLO\n"); break;
+		default: break;
 	}
-}	 
-
-*******************************************************************************/
 
 	return &result;
 }

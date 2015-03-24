@@ -9,29 +9,32 @@
 #define TAMA 128
 
 void
-imprimir_estado(Estado * estado) {
-	if(estado==OK)
+imprimir_resultado_insercion(Estado estado) {
+	if(estado==OK) {
 		printf("Operacion realizada correctamente\n");
-	else if(estado==FALLO)
-		printf("La operacion ha fallado\n");
-	else
+	} else {
 		printf("Clave ya existente. Reemplazado el valor de esta\n");
+	}
 }
 
 void
 asociacionprog_1(char *host)
 {
 	CLIENT *clnt;
+
 	Estado  *result_1;
 	ID ponerasociacion_1_arg1;
 	Clave ponerasociacion_1_arg2;
 	Valor ponerasociacion_1_arg3;
+
 	ResultEntrada  *result_2;
 	ID obtenerasociacion_1_arg1;
 	Clave obtenerasociacion_1_arg2;
+
 	Estado  *result_3;
 	ID borrarasociacion_1_arg1;
 	Clave borrarasociacion_1_arg2;
+
 	ResultDiccionario  *result_4;
 	ID enumerar_1_arg1;
 
@@ -44,8 +47,8 @@ asociacionprog_1(char *host)
 #endif	/* DEBUG */
 
 	int opcion;
-	int id;
-	char str[TAMA];
+	int inInt;
+	char inStr [TAMA];
 
 	printf("Seleccione Opcción:\n1.-Insertar asociación\n2.-Obtener asociación\n3.-Borrar asociación\n4.-Enumerar\n5.-Salir\n");
 	scanf("%d",&opcion);
@@ -54,19 +57,16 @@ asociacionprog_1(char *host)
 			case 1:
 				printf("INSERTAR ASOCIACIÓN\n");
 				printf("Introduzca ID: ");
-				scanf("%d",&id);
-				ponerasociacion_1_arg1 = id;
-				//printf("Has escrito %d\n",ponerasociacion_1_arg1);
+				scanf("%d",&inInt);
+				ponerasociacion_1_arg1 = inInt;
 				printf("Introduzca Clave: ");
-				scanf("%s",str);
-				ponerasociacion_1_arg2 = str;
-				//printf("Has escrito %s\n",ponerasociacion_1_arg2);
+				scanf("%s",inStr);
+				ponerasociacion_1_arg2 = strdup(inStr);
 				printf("Introduzca Valor: ");
-				scanf("%s",str);
-				ponerasociacion_1_arg3 = str;
-				//printf("Has escrito %s\n",ponerasociacion_1_arg3);
+				scanf("%s",inStr);
+				ponerasociacion_1_arg3 = strdup(inStr);
 				result_1 = ponerasociacion_1(ponerasociacion_1_arg1, ponerasociacion_1_arg2, ponerasociacion_1_arg3, clnt);
-				imprimir_estado(result_1);
+				imprimir_resultado_insercion(*result_1);
 				if (result_1 == (Estado *) NULL) {
 					clnt_perror (clnt, "call failed");
 				}
@@ -74,11 +74,11 @@ asociacionprog_1(char *host)
 			case 2:
 				printf("OBTENER ASOCIACIÓN\n");
 				printf("Introduzca ID:");
-				scanf("%d",&id);
-				obtenerasociacion_1_arg1 = id;
+				scanf("%d",&inInt);
+				obtenerasociacion_1_arg1 = inInt;
 				printf("Introduzca Clave: ");
-				scanf("%s",str);
-				obtenerasociacion_1_arg2 = str;
+				scanf("%s",inStr);
+				obtenerasociacion_1_arg2 = inStr;
 				result_2 = obtenerasociacion_1(obtenerasociacion_1_arg1, obtenerasociacion_1_arg2, clnt);
 				if (result_2 == (ResultEntrada *) NULL) {
 					clnt_perror (clnt, "call failed");
@@ -87,11 +87,11 @@ asociacionprog_1(char *host)
 			case 3:
 				printf("BORRAR ASOCIACIÓN\n");
 				printf("Introduzca ID:");
-				scanf("%d",&id);
-				borrarasociacion_1_arg1 = id;
+				scanf("%d",&inInt);
+				borrarasociacion_1_arg1 = inInt;
 				printf("Introduzca Clave: ");
-				scanf("%s",str);
-				borrarasociacion_1_arg2 = str;
+				scanf("%s",inStr);
+				borrarasociacion_1_arg2 = inStr;
 				result_3 = borrarasociacion_1(borrarasociacion_1_arg1, borrarasociacion_1_arg2, clnt);
 				if (result_3 == (Estado *) NULL) {
 					clnt_perror (clnt, "call failed");
@@ -100,8 +100,8 @@ asociacionprog_1(char *host)
 			case 4:
 				printf("ENUMERAR DICCIONARIO\n");
 				printf("Introduzca ID:");
-				scanf("%d",&id);
-				enumerar_1_arg1 = id;
+				scanf("%d",&inInt);
+				enumerar_1_arg1 = inInt;
 				result_4 = enumerar_1(enumerar_1_arg1, clnt);
 				if (result_4 == (ResultDiccionario *) NULL) {
 					clnt_perror (clnt, "call failed");
