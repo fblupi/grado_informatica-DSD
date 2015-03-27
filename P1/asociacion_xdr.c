@@ -98,9 +98,9 @@ xdr_ResultEntrada (XDR *xdrs, ResultEntrada *objp)
 {
 	register int32_t *buf;
 
-	 if (!xdr_Estado (xdrs, &objp->e))
+	 if (!xdr_Estado (xdrs, &objp->estado))
 		 return FALSE;
-	switch (objp->e) {
+	switch (objp->estado) {
 	case OK:
 		 if (!xdr_Valor (xdrs, &objp->ResultEntrada_u.valor))
 			 return FALSE;
@@ -116,11 +116,11 @@ xdr_ResultDiccionario (XDR *xdrs, ResultDiccionario *objp)
 {
 	register int32_t *buf;
 
-	 if (!xdr_Estado (xdrs, &objp->e))
+	 if (!xdr_Estado (xdrs, &objp->estado))
 		 return FALSE;
-	switch (objp->e) {
+	switch (objp->estado) {
 	case OK:
-		 if (!xdr_Entrada (xdrs, &objp->ResultDiccionario_u.entrada))
+		 if (!xdr_EntradaPtr (xdrs, &objp->ResultDiccionario_u.entPtr))
 			 return FALSE;
 		break;
 	default:

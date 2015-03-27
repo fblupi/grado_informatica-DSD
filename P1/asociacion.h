@@ -47,7 +47,7 @@ struct Diccionario {
 typedef struct Diccionario Diccionario;
 
 struct ResultEntrada {
-	Estado e;
+	Estado estado;
 	union {
 		Valor valor;
 	} ResultEntrada_u;
@@ -55,9 +55,9 @@ struct ResultEntrada {
 typedef struct ResultEntrada ResultEntrada;
 
 struct ResultDiccionario {
-	Estado e;
+	Estado estado;
 	union {
-		Entrada entrada;
+		EntradaPtr entPtr;
 	} ResultDiccionario_u;
 };
 typedef struct ResultDiccionario ResultDiccionario;

@@ -19,8 +19,32 @@ imprimir_resultado_insercion(Estado estado) {
 
 void
 imprimir_resultado_consulta(ResultEntrada result) {
-	if(result.e==OK) {
+	if(result.estado==OK) {
 		printf("Valor: %s\n\n",result.ResultEntrada_u.valor);
+	} else {
+		printf("Error. No existe esa clave para ese diccionario\n\n");
+	}
+}
+
+void
+imprimir_resultado_enumerar(ResultDiccionario result) {
+	if(result.estado==OK) {
+		EntradaPtr entPtr = result.ResultDiccionario_u.entPtr;
+		printf("%s: %s\n", entPtr->clave, entPtr->valor);
+		while(entPtr->sig!=NULL) {
+			entPtr = entPtr->sig;
+			printf("%s: %s\n", entPtr->clave, entPtr->valor);
+		}
+		printf("\n");
+	} else {
+		printf("El diccionario indicado no existe\n\n");
+	}
+}
+
+void
+imprimir_resultado_borrar(Estado estado) {
+	if(estado==OK) {
+		printf("Entrada borrada correctamente\n\n");
 	} else {
 		printf("Error. No existe esa clave para ese diccionario\n\n");
 	}
@@ -30,20 +54,16 @@ void
 asociacionprog_1(char *host)
 {
 	CLIENT *clnt;
-
 	Estado  *result_1;
 	ID ponerasociacion_1_arg1;
 	Clave ponerasociacion_1_arg2;
 	Valor ponerasociacion_1_arg3;
-
 	ResultEntrada  *result_2;
 	ID obtenerasociacion_1_arg1;
 	Clave obtenerasociacion_1_arg2;
-
 	Estado  *result_3;
 	ID borrarasociacion_1_arg1;
 	Clave borrarasociacion_1_arg2;
-
 	ResultDiccionario  *result_4;
 	ID enumerar_1_arg1;
 
@@ -59,7 +79,7 @@ asociacionprog_1(char *host)
 	int inInt;
 	char inStr [TAMA];
 
-	printf("Seleccione Opcción:\n1.-Insertar asociación\n2.-Obtener asociación\n3.-Borrar asociación\n4.-Enumerar\n5.-Salir\n");
+	printf("Seleccione Opcción:\n1.-Insertar asociación\n2.-Obtener asociación\n3.-Borrar asociación\n4.-Enumerar\n5.-Salir\nOpción: ");
 	scanf("%d",&opcion);
 	while(opcion!=5) {
 		switch(opcion) {
@@ -103,6 +123,7 @@ asociacionprog_1(char *host)
 				scanf("%s",inStr);
 				borrarasociacion_1_arg2 = inStr;
 				result_3 = borrarasociacion_1(borrarasociacion_1_arg1, borrarasociacion_1_arg2, clnt);
+				imprimir_resultado_borrar(*result_3);
 				if (result_3 == (Estado *) NULL) {
 					clnt_perror (clnt, "call failed");
 				}
@@ -113,15 +134,16 @@ asociacionprog_1(char *host)
 				scanf("%d",&inInt);
 				enumerar_1_arg1 = inInt;
 				result_4 = enumerar_1(enumerar_1_arg1, clnt);
+				imprimir_resultado_enumerar(*result_4);
 				if (result_4 == (ResultDiccionario *) NULL) {
 					clnt_perror (clnt, "call failed");
 				}
 				break;
 			default:
-				printf("Opción incorrecta.\n");
+				printf("Opción incorrecta\n");
 				break;
 		}
-		printf("Seleccione Opcción:\n1.-Insertar asociación\n2.-Obtener asociación\n3.-Borrar asociación\n4.-Enumerar\n5.-Salir\n");
+		printf("Seleccione Opcción:\n1.-Insertar asociación\n2.-Obtener asociación\n3.-Borrar asociación\n4.-Enumerar\n5.-Salir\nOpción: ");
 		scanf("%d",&opcion);
 	}
 

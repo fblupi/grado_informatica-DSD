@@ -6,7 +6,10 @@
 
 #include "asociacion.h"
 
-typedef enum {false,true} bool;
+typedef enum {
+	false,
+	true
+} bool;
 
 DiccionarioPtr root = NULL;
 
@@ -14,9 +17,6 @@ Estado *
 ponerasociacion_1_svc(ID arg1, Clave arg2, Valor arg3,  struct svc_req *rqstp)
 {
 	printf("\nINSERCION:\n");
-	//printf("id: %d\n", arg1);
-	//printf("clave: %s\n", arg2);
-	//printf("valor: %s\n", arg3);
 
 	static Estado  result;
 
@@ -27,9 +27,6 @@ ponerasociacion_1_svc(ID arg1, Clave arg2, Valor arg3,  struct svc_req *rqstp)
 		ent->clave = strdup(arg2);
 		ent->valor = strdup(arg3);
 		ent->sig = NULL;
-		//printf("\tEntrada:\n");
-		//printf("\t\tclave: %s\n",ent->clave);
-		//printf("\t\tvalor: %s\n",ent->valor);
 		// Nuevo diccionario
 		DiccionarioPtr dic = (DiccionarioPtr)malloc(sizeof(Diccionario));  
 		dic->id = arg1;
@@ -39,13 +36,13 @@ ponerasociacion_1_svc(ID arg1, Clave arg2, Valor arg3,  struct svc_req *rqstp)
 		result = OK;
 	} else { // Hay algún diccionario
 		printf("Hay algun diccionario\n");
-		DiccionarioPtr dicPtr = root;
+		DiccionarioPtr dicPtr = root; // Primera entrada es la raiz
 		bool encontradoID = false;
 		if(dicPtr->id==arg1) {
 			encontradoID = true;
 		}
 		while(encontradoID==false && dicPtr->sig!=NULL) { // Buscar diccionario
-			dicPtr=dicPtr->sig;
+			dicPtr = dicPtr->sig;
 			if(dicPtr->id==arg1) {
 				encontradoID = true;
 			}
@@ -53,9 +50,6 @@ ponerasociacion_1_svc(ID arg1, Clave arg2, Valor arg3,  struct svc_req *rqstp)
 		if(encontradoID==true) { // Diccionario encontrado
 			printf("Diccionario encontrado\n");
 			EntradaPtr entPtr = dicPtr->first;
-			//printf("\tEntrada:\n");
-			//printf("\t\tclave: %s\n", entPtr->clave);
-			//printf("\t\tvalor: %s\n", entPtr->valor);
 			bool encontradoClave = false;
 			if(strcmp(entPtr->clave,arg2)==0) {
 				encontradoClave = true;
@@ -97,13 +91,6 @@ ponerasociacion_1_svc(ID arg1, Clave arg2, Valor arg3,  struct svc_req *rqstp)
 		}
 	}
 
-	switch(result) {
-		case OK: printf("OK\n"); break;
-		case REEMPLAZADO: printf("REEMPLAZADO\n"); break;
-		case FALLO: printf("FALLO\n"); break;
-		default: break;
-	}
-
 	return &result;
 }
 
@@ -116,7 +103,7 @@ obtenerasociacion_1_svc(ID arg1, Clave arg2,  struct svc_req *rqstp)
 
 	if(root==NULL) { // No hay ningún diccionario
 		printf("No hay ningun diccionario\n");
-		result.e = FALLO;
+		result.estado = FALLO;
 	} else { // Hay algún diccionario
 		printf("Hay algun diccionario\n");
 		DiccionarioPtr dicPtr = root;
@@ -125,7 +112,7 @@ obtenerasociacion_1_svc(ID arg1, Clave arg2,  struct svc_req *rqstp)
 			encontradoID = true;
 		}
 		while(encontradoID==false && dicPtr->sig!=NULL) { // Buscar diccionario
-			dicPtr=dicPtr->sig;
+			dicPtr = dicPtr->sig;
 			if(dicPtr->id==arg1) {
 				encontradoID = true;
 			}
@@ -145,16 +132,15 @@ obtenerasociacion_1_svc(ID arg1, Clave arg2,  struct svc_req *rqstp)
 			}
 			if(encontradoClave==true) { // Clave encontrada
 				printf("Clave encontrada\n");
-				result.e = OK;
+				result.estado = OK;
 				result.ResultEntrada_u.valor = strdup(entPtr->valor);
 			} else { //  Clave no encontrada
 				printf("Clave no encontrada\n");
-				// Nueva entrada
-				result.e = FALLO;
+				result.estado = FALLO;
 			}
-		} else { // Diccionario no encontrado -> se crea uno nuevo
+		} else { // Diccionario no encontrado
 			printf("Diccionario no encontrado\n");
-			result.e = FALLO;
+			result.estado = FALLO;
 		}
 	}
 
@@ -164,15 +150,121 @@ obtenerasociacion_1_svc(ID arg1, Clave arg2,  struct svc_req *rqstp)
 Estado *
 borrarasociacion_1_svc(ID arg1, Clave arg2,  struct svc_req *rqstp)
 {
+	printf("\nBORRADO:\n");
 	static Estado  result;
 
-/*******************************************************************************
-BORRAR
-********************************************************************************
-
- 
-
-*******************************************************************************/
+	if(root==NULL) { // No hay ningún diccionario
+		printf("No hay ningun diccionario\n");
+		result = FALLO;
+	} else { // Hay algún diccionario
+		printf("Hay algun diccionario\n");
+		DiccionarioPtr dicPtr = root;
+		bool encontradoID = false;
+		if(dicPtr->id==arg1) {
+			encontradoID = true;
+		}
+		if(encontradoID==true) { // Es el primer diccionario
+			printf("Es el primer diccionario\n");
+			EntradaPtr entPtr = dicPtr->first;
+			bool encontradoClave = false;
+			if(strcmp(entPtr->clave,arg2)==0) {
+				encontradoClave = true;
+			}
+			if(encontradoClave==true) { // Es la primera clave
+				printf("Es la primera clave\n");
+				if(entPtr->sig==NULL) { // Es la unica clave
+					printf("Es la unica clave\n");
+					root = dicPtr->sig;
+					dicPtr->sig = NULL;
+					xdr_free((xdrproc_t)xdr_Diccionario,(char*)dicPtr);
+					result = OK;
+				} else { // No es la unica clave
+					printf("No es la unica clave\n");
+					dicPtr->first = entPtr->sig;
+					entPtr->sig = NULL;
+					xdr_free((xdrproc_t)xdr_Entrada,(char*)entPtr);
+					result = OK;
+				}
+			} else { // No es la primera asociacion
+				printf("No es la primera asociacion\n");
+				EntradaPtr entPtrAnt = entPtr;
+				while(encontradoClave==false && entPtr->sig!=NULL) { // Buscar entrada
+					entPtrAnt = entPtr;
+					entPtr = entPtr->sig;
+					if(strcmp(entPtr->clave,arg2)==0) {
+						encontradoClave = true;
+					}
+				}
+				if(encontradoClave==true) { // Clave encontrada
+					printf("Clave encontrada\n");
+					entPtrAnt->sig = entPtr->sig;
+					entPtr->sig = NULL;
+					xdr_free((xdrproc_t)xdr_Entrada,(char*)entPtr);
+					result = OK;
+				} else { // Clave no encontrada
+					printf("Clave no encontrada\n");
+					result = FALLO;
+				}
+			}
+		} else { // No es el primer diccionario
+			printf("No es el primer diccionario\n");
+			DiccionarioPtr dicPtrAnt;
+			while(encontradoID==false && dicPtr->sig!=NULL) { // Buscar diccionario
+				dicPtrAnt = dicPtr;
+				dicPtr = dicPtr->sig;
+				if(dicPtr->id==arg1) {
+					encontradoID = true;
+				}
+			}
+			if(encontradoID==true) { // Diccionario encontrado
+				printf("Diccionario encontrado\n");
+				EntradaPtr entPtr = dicPtr->first;
+				bool encontradoClave = false;
+				if(strcmp(entPtr->clave,arg2)==0) {
+					encontradoClave = true;
+				}
+				if(encontradoClave==true) { // Es la primera clave
+					printf("Es la primera clave\n");
+					if(entPtr->sig==NULL) { // Es la unica clave
+						printf("Es la unica clave\n");
+						dicPtrAnt->sig = dicPtr->sig;
+						dicPtr->sig = NULL;
+						xdr_free((xdrproc_t)xdr_Diccionario,(char*)dicPtr);
+						result = OK;
+					} else { // No es la unica clave
+						printf("No es la unica clave\n");
+						dicPtr->first = entPtr->sig;
+						entPtr->sig = NULL;
+						xdr_free((xdrproc_t)xdr_Entrada,(char*)entPtr);
+						result = OK;
+					}
+				} else { // No es la primera asociacion
+					printf("No es la primera asociacion\n");
+					EntradaPtr entPtrAnt = entPtr;
+					while(encontradoClave==false && entPtr->sig!=NULL) { // Buscar entrada
+						entPtrAnt = entPtr;
+						entPtr = entPtr->sig;
+						if(strcmp(entPtr->clave,arg2)==0) {
+							encontradoClave = true;
+						}
+					}
+					if(encontradoClave==true) { // Clave encontrada
+						printf("Clave encontrada\n");
+						entPtrAnt->sig = entPtr->sig;
+						entPtr->sig = NULL;
+						xdr_free((xdrproc_t)xdr_Entrada,(char*)entPtr);
+						result = OK;
+					} else { // Clave no encontrada
+						printf("Clave no encontrada\n");
+						result = FALLO;
+					}
+				}
+			} else { // Diccionario no encontrado
+				printf("Diccionario no encontrado\n");
+				result = FALLO;
+			}
+		} 
+	}
 
 	return &result;
 }
@@ -180,21 +272,38 @@ BORRAR
 ResultDiccionario *
 enumerar_1_svc(ID arg1,  struct svc_req *rqstp)
 {
+	printf("\nENUMERACION:\n");
+
 	static ResultDiccionario  result;
 
-/*******************************************************************************
-ENUMERAR
-********************************************************************************
-
-encontradoID = BUSCAR ID;
-if(encontradoID) {
-	result->entrada = diccinarioPtr->first;
-	result->e = OK;
-} else {	
-	result->e = FALLO;
-}
-	 
-*******************************************************************************/
+	if(root==NULL) { // No hay ningún diccionario
+		printf("No hay ningun diccionario\n");
+		result.estado = FALLO;
+	} else { // Hay algún diccionario
+		printf("Hay algun diccionario\n");
+		DiccionarioPtr dicPtr = root;
+		bool encontradoID = false;
+		if(dicPtr->id==arg1) {
+			encontradoID = true;
+		}
+		while(encontradoID==false && dicPtr->sig!=NULL) { // Buscar diccionario
+			dicPtr = dicPtr->sig;
+			if(dicPtr->id==arg1) {
+				encontradoID = true;
+			}
+		}
+		if(encontradoID==true) { // Diccionario encontrado
+			printf("Diccionario encontrado\n");
+			result.estado = OK;
+			EntradaPtr entPtr = dicPtr->first;
+			EntradaPtr sal = (EntradaPtr)malloc(sizeof(Entrada));
+			sal = entPtr;
+			result.ResultDiccionario_u.entPtr = sal;
+		} else { // Diccionario no encontrado -> se crea uno nuevo
+			printf("Diccionario no encontrado\n");
+			result.estado = FALLO;
+		}
+	}
 
 	return &result;
 }

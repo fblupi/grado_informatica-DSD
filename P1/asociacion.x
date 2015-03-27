@@ -1,4 +1,4 @@
-const TAMA = 128; /* Tamaño máximo de los String */
+const TAMA = 128; 
 typedef int ID;
 typedef string Clave<TAMA>;
 typedef string Valor<TAMA>;
@@ -23,13 +23,13 @@ struct Diccionario {
 	EntradaPtr first;
 };
 
-union ResultEntrada switch(Estado e) {
+union ResultEntrada switch(Estado estado) {
 	case OK: Valor valor;
 	default: void;
 };
 
-union ResultDiccionario switch(Estado e) {
-	case OK: Entrada entrada;
+union ResultDiccionario switch(Estado estado) {
+	case OK: EntradaPtr entPtr;
 	default: void;
 };
 
