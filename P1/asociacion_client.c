@@ -96,6 +96,7 @@ asociacionprog_1(char *host)
 				ponerasociacion_1_arg3 = strdup(inStr);
 				result_1 = ponerasociacion_1(ponerasociacion_1_arg1, ponerasociacion_1_arg2, ponerasociacion_1_arg3, clnt);
 				imprimir_resultado_insercion(*result_1);
+				xdr_free((xdrproc_t)xdr_Estado,(char*)result_1);
 				if (result_1 == (Estado *) NULL) {
 					clnt_perror (clnt, "call failed");
 				}
@@ -110,6 +111,7 @@ asociacionprog_1(char *host)
 				obtenerasociacion_1_arg2 = inStr;
 				result_2 = obtenerasociacion_1(obtenerasociacion_1_arg1, obtenerasociacion_1_arg2, clnt);
 				imprimir_resultado_consulta(*result_2);
+				xdr_free((xdrproc_t)xdr_ResultEntrada,(char*)result_2);
 				if (result_2 == (ResultEntrada *) NULL) {
 					clnt_perror (clnt, "call failed");
 				}
@@ -124,6 +126,7 @@ asociacionprog_1(char *host)
 				borrarasociacion_1_arg2 = inStr;
 				result_3 = borrarasociacion_1(borrarasociacion_1_arg1, borrarasociacion_1_arg2, clnt);
 				imprimir_resultado_borrar(*result_3);
+				xdr_free((xdrproc_t)xdr_Estado,(char*)result_3);
 				if (result_3 == (Estado *) NULL) {
 					clnt_perror (clnt, "call failed");
 				}
@@ -135,6 +138,7 @@ asociacionprog_1(char *host)
 				enumerar_1_arg1 = inInt;
 				result_4 = enumerar_1(enumerar_1_arg1, clnt);
 				imprimir_resultado_enumerar(*result_4);
+				xdr_free((xdrproc_t)xdr_ResultDiccionario,(char*)result_4);
 				if (result_4 == (ResultDiccionario *) NULL) {
 					clnt_perror (clnt, "call failed");
 				}
