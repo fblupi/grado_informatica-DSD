@@ -1,8 +1,5 @@
-package cliente;
-
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import interfaz.Ejemplo_I;
 
 public class Cliente_Ejemplo {
     public static void main(String args[]) {
