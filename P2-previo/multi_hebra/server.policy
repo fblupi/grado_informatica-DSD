@@ -1,0 +1,3 @@
+grant codeBase "file:/C:/Users/FranciscoJavier/Documents/GitHub/grado_informatica-DSD/P2-previo/multi_hebra/" {
+    permission java.security.AllPermission;
+};
