@@ -1,4 +1,12 @@
 
+import java.awt.Color;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyleContext;
+
 public class ClienteView extends javax.swing.JFrame {
 
     private Cliente cliente;
@@ -14,8 +22,7 @@ public class ClienteView extends javax.swing.JFrame {
     }
     
     public void setNombre (String nombre) {
-        labelNombre.setText(nombre);
-        repaint();
+        this.setTitle(nombre);
     }
 
     public void setCliente (Cliente cliente) {
@@ -34,7 +41,33 @@ public class ClienteView extends javax.swing.JFrame {
     }
 
     public void mostrarMensaje (String nombre, String mensajeRecibido) {
-        historial.append(nombre + ": " + mensajeRecibido + "\n");
+        historial.setEditable(true);
+        if ("Servidor".equals(nombre)) {
+            append(new SimpleDateFormat("HH:mm").format(new Date()) + " ", Color.LIGHT_GRAY);
+            append(mensajeRecibido + "\n", Color.ORANGE);
+        } else if (cliente.getNombre().equals(nombre)) {
+            append(new SimpleDateFormat("HH:mm").format(new Date()) + " ", Color.LIGHT_GRAY);
+            append(nombre + ": ", Color.GREEN);
+            append(mensajeRecibido + "\n", Color.BLACK);
+        } else {
+            append(new SimpleDateFormat("HH:mm").format(new Date()) + " ", Color.LIGHT_GRAY);
+            append(nombre + ": ", Color.BLUE);
+            append(mensajeRecibido + "\n", Color.BLACK);
+        }
+        historial.setEditable(false);
+    }
+
+    private void append (String mensaje, Color color) {
+        StyleContext styleContext = StyleContext.getDefaultStyleContext();
+        AttributeSet attributeSet = styleContext.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, color);
+
+        attributeSet = styleContext.addAttribute(attributeSet, StyleConstants.FontFamily, "Lucida Console");
+        attributeSet = styleContext.addAttribute(attributeSet, StyleConstants.Alignment, StyleConstants.ALIGN_JUSTIFIED);
+
+        int longitud = historial.getDocument().getLength();
+        historial.setCaretPosition(longitud);
+        historial.setCharacterAttributes(attributeSet, false);
+        historial.replaceSelection(mensaje);
     }
 
     /**
@@ -44,20 +77,16 @@ public class ClienteView extends javax.swing.JFrame {
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
-    private void initComponents () {
+    private void initComponents() {
 
-        labelNombre = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         mensaje = new javax.swing.JTextArea();
         buttonEnviar = new javax.swing.JButton();
         buttonDesconectar = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
-        historial = new javax.swing.JTextArea();
+        historial = new javax.swing.JTextPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        labelNombre.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        labelNombre.setText("Nombre");
 
         mensaje.setColumns(20);
         mensaje.setRows(5);
@@ -65,21 +94,19 @@ public class ClienteView extends javax.swing.JFrame {
 
         buttonEnviar.setText("Enviar");
         buttonEnviar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed (java.awt.event.ActionEvent evt) {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonEnviarActionPerformed(evt);
             }
         });
 
         buttonDesconectar.setText("Desconectar");
         buttonDesconectar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed (java.awt.event.ActionEvent evt) {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonDesconectarActionPerformed(evt);
             }
         });
 
-        historial.setColumns(20);
-        historial.setRows(5);
-        historial.setEnabled(false);
+        historial.setEditable(false);
         jScrollPane2.setViewportView(historial);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -89,24 +116,20 @@ public class ClienteView extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(buttonEnviar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(buttonDesconectar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addComponent(jScrollPane2)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(labelNombre)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                            .addComponent(buttonDesconectar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(labelNombre)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 181, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 191, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -120,26 +143,25 @@ public class ClienteView extends javax.swing.JFrame {
         pack();
     }// </editor-fold>                        
 
-    private void buttonEnviarActionPerformed (java.awt.event.ActionEvent evt) {                                             
+    private void buttonEnviarActionPerformed(java.awt.event.ActionEvent evt) {                                             
         // TODO add your handling code here:
         enviarMensaje();
     }                                            
 
-    private void buttonDesconectarActionPerformed (java.awt.event.ActionEvent evt) {                                                  
+    private void buttonDesconectarActionPerformed(java.awt.event.ActionEvent evt) {                                                  
         // TODO add your handling code here:
         desconectar();
     }                                                 
 
-    public void showView () {
+    public void showView() {
         this.setVisible(true);
     }
     // Variables declaration - do not modify                     
     private javax.swing.JButton buttonDesconectar;
     private javax.swing.JButton buttonEnviar;
-    private javax.swing.JTextArea historial;
+    private javax.swing.JTextPane historial;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JLabel labelNombre;
     private javax.swing.JTextArea mensaje;
     // End of variables declaration                   
 }

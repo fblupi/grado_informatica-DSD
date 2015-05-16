@@ -49,6 +49,10 @@ public class Cliente implements InterfazCliente {
         }
     }
 
+    public String getNombre () {
+        return nombre;
+    }
+
     /**************************************************************************/
 
     public static void main (String args[]) {
@@ -58,7 +62,7 @@ public class Cliente implements InterfazCliente {
         try {
             System.out.println("Buscando el objeto remoto");
             Registry registry = LocateRegistry.getRegistry(args[0]);
-            InterfazServidor instanciaLocal = (InterfazServidor) registry.lookup("ServidorCentral");
+            InterfazServidor instanciaLocal = (InterfazServidor) registry.lookup("Servidor");
             System.out.println("Invocando el objeto remoto");
 
             ClienteView clienteView = new ClienteView();
