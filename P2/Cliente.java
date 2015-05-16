@@ -1,21 +1,52 @@
+import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 
 public class Cliente implements InterfazCliente {
 
-    private String id;
+    private String nombre;
+    private InterfazServidor servidor;
+    private ClienteView clienteView;
 
-    public Cliente (String id) {
+    public Cliente (String nombre, InterfazServidor servidor) {
         super();
-        this.id = id;
+        this.nombre = nombre;
+        this.servidor = servidor;
+        try {
+            InterfazCliente stub = (InterfazCliente) UnicastRemoteObject.exportObject((InterfazCliente) this, 0);
+            servidor.registrar(nombre, stub);
+        } catch (RemoteException e) {
+            System.err.println("Cliente exception:");
+            e.printStackTrace();
+        }
     }
 
-    public String getId () {
-        return id;
+    public void setClienteView (ClienteView clienteView) {
+        this.clienteView = clienteView;
     }
 
     public void mostrarMensaje (String cliente, String mensaje) {
-        System.out.println(cliente + ": " + mensaje);
+        clienteView.mostrarMensaje(cliente, mensaje);
+    }
+
+    public void desconectar () {
+        try {
+            servidor.desconectar(nombre);
+        } catch (RemoteException e) {
+            System.err.println("Cliente exception:");
+            e.printStackTrace();
+        }
+        System.exit(0);
+    }
+
+    public void difundirMensaje (String mensaje) {
+        try {
+            servidor.difundirMensaje(nombre, mensaje);
+        } catch (RemoteException e) {
+            System.err.println("Cliente exception:");
+            e.printStackTrace();
+        }
     }
 
     /**************************************************************************/
@@ -25,28 +56,26 @@ public class Cliente implements InterfazCliente {
             System.setSecurityManager(new SecurityManager());
         }
         try {
-            String nombreObjetoRemoto = "ServidorCentral";
-            Cliente c = new Cliente(args[1]);
-
             System.out.println("Buscando el objeto remoto");
             Registry registry = LocateRegistry.getRegistry(args[0]);
-            InterfazServidor instanciaLocal = (InterfazServidor) registry.lookup(nombreObjetoRemoto);
+            InterfazServidor instanciaLocal = (InterfazServidor) registry.lookup("ServidorCentral");
             System.out.println("Invocando el objeto remoto");
 
-            instanciaLocal.registrar(c.getId());
-            instanciaLocal.difundirMensaje(c.getId(), "Hola, esto es una prueba");
-            instanciaLocal.desconectar(c.getId());
+            ClienteView clienteView = new ClienteView();
+
+            CapturarNombre capturarNombre = new CapturarNombre(clienteView, true);
+            String nombre = capturarNombre.getNombre();
+
+            Cliente cliente = new Cliente(nombre, instanciaLocal);
+            clienteView.setNombre(nombre);
+            clienteView.setCliente(cliente);
+            cliente.setClienteView(clienteView);
+
+            clienteView.showView();
+
         } catch (Exception e) {
-            System.err.println("Servidor exception:");
+            System.err.println("Cliente exception:");
             e.printStackTrace();
         }
-
-        System.out.println("Press any key to continue...");
-        try {
-            System.in.read();
-        }  
-        catch (Exception e) {
-
-        }  
     }
 }

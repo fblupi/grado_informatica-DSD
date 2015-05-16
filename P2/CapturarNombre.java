@@ -1,4 +1,3 @@
-package GUI;
 
 public class CapturarNombre extends javax.swing.JDialog {
 
