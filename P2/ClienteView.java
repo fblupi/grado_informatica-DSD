@@ -1,5 +1,6 @@
 
 import java.awt.Color;
+import java.awt.event.KeyEvent;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.text.AttributeSet;
@@ -30,9 +31,8 @@ public class ClienteView extends javax.swing.JFrame {
     }
     
     public void enviarMensaje () {
-        String mensajeAEnviar = mensaje.getText();
+        cliente.difundirMensaje(mensaje.getText());
         mensaje.setText("");
-        cliente.difundirMensaje(mensajeAEnviar);
     }
     
     public void desconectar () {
@@ -42,14 +42,14 @@ public class ClienteView extends javax.swing.JFrame {
 
     public void mostrarMensaje (String nombre, String mensajeRecibido) {
         historial.setEditable(true);
-        if ("Servidor".equals(nombre)) {
+        if ("Servidor".equals(nombre)) { // Si el mensaje es del servidor, no aparece el nombre y el mensaje aparece en naranaja
             append(new SimpleDateFormat("HH:mm").format(new Date()) + " ", Color.LIGHT_GRAY);
             append(mensajeRecibido + "\n", Color.ORANGE);
-        } else if (cliente.getNombre().equals(nombre)) {
+        } else if (cliente.getNombre().equals(nombre)) { // Si el mensaje es del mismo autor, su nombre aparece verde
             append(new SimpleDateFormat("HH:mm").format(new Date()) + " ", Color.LIGHT_GRAY);
             append(nombre + ": ", Color.GREEN);
             append(mensajeRecibido + "\n", Color.BLACK);
-        } else {
+        } else { // Si es un mensaje de cualquier otro usuario, el nombre aparece en azul
             append(new SimpleDateFormat("HH:mm").format(new Date()) + " ", Color.LIGHT_GRAY);
             append(nombre + ": ", Color.BLUE);
             append(mensajeRecibido + "\n", Color.BLACK);
@@ -77,7 +77,7 @@ public class ClienteView extends javax.swing.JFrame {
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
-    private void initComponents() {
+    private void initComponents () {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         mensaje = new javax.swing.JTextArea();
@@ -90,18 +90,23 @@ public class ClienteView extends javax.swing.JFrame {
 
         mensaje.setColumns(20);
         mensaje.setRows(5);
+        mensaje.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                mensajeKeyPressed(evt);
+            }
+        });
         jScrollPane1.setViewportView(mensaje);
 
         buttonEnviar.setText("Enviar");
         buttonEnviar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            public void actionPerformed (java.awt.event.ActionEvent evt) {
                 buttonEnviarActionPerformed(evt);
             }
         });
 
         buttonDesconectar.setText("Desconectar");
         buttonDesconectar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            public void actionPerformed (java.awt.event.ActionEvent evt) {
                 buttonDesconectarActionPerformed(evt);
             }
         });
@@ -143,17 +148,29 @@ public class ClienteView extends javax.swing.JFrame {
         pack();
     }// </editor-fold>                        
 
-    private void buttonEnviarActionPerformed(java.awt.event.ActionEvent evt) {                                             
+    private void buttonEnviarActionPerformed (java.awt.event.ActionEvent evt) {                                             
         // TODO add your handling code here:
         enviarMensaje();
     }                                            
 
-    private void buttonDesconectarActionPerformed(java.awt.event.ActionEvent evt) {                                                  
+    private void buttonDesconectarActionPerformed (java.awt.event.ActionEvent evt) {                                                  
         // TODO add your handling code here:
         desconectar();
-    }                                                 
+    }     
 
-    public void showView() {
+    private void mensajeKeyPressed (java.awt.event.KeyEvent evt) {                                   
+        // TODO add your handling code here:
+        if (evt.getKeyChar() == KeyEvent.VK_ENTER) { // Se ha pulsado INTRO
+            if (evt.isShiftDown()) { // Si se pulsa shift se captura el salto de línea
+                mensaje.append("\n");
+            } else { // En caso contrario se envía el mensaje
+                evt.consume();
+                enviarMensaje();
+            }
+        }
+    }                                              
+
+    public void showView () {
         this.setVisible(true);
     }
     // Variables declaration - do not modify                     
