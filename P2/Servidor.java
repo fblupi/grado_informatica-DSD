@@ -11,14 +11,16 @@ public class Servidor implements InterfazServidor {
 
     private HashMap<String, InterfazCliente> clientes;
     private Registry registry;
+    private String nombre;
 
-    public Servidor () {
+    public Servidor (String nombre) {
         super();
         clientes = new HashMap<String, InterfazCliente>();
+        this.nombre = nombre;
         try {
             registry = LocateRegistry.getRegistry();
             InterfazServidor stub = (InterfazServidor) UnicastRemoteObject.exportObject((InterfazServidor) this, 0);
-            registry.rebind("Servidor", stub);
+            registry.rebind(this.nombre, stub);
         } catch (RemoteException e) {
             System.err.println("Servidor exception:");
             e.printStackTrace();
@@ -32,7 +34,7 @@ public class Servidor implements InterfazServidor {
             System.err.println("Servidor exception:");
             e.printStackTrace();
         }
-        difundirMensaje("Servidor", nombre + " se conectó.");
+        difundirMensaje(this.nombre, nombre + " se conectó.");
         clientes.put(nombre, cliente);
     }
 
@@ -55,14 +57,16 @@ public class Servidor implements InterfazServidor {
             e.printStackTrace();
         }
         clientes.remove(nombre);
-        difundirMensaje("Servidor", nombre + " se desconectó.");
+        difundirMensaje(this.nombre, nombre + " se desconectó.");
     }
 
+    /**************************************************************************/
+    
     public static void main (String[] args) {
         if (System.getSecurityManager() == null) {
             System.setSecurityManager(new SecurityManager());
         }
-        Servidor servidor = new Servidor();
+        Servidor servidor = new Servidor(args[0]);
     }
 
 }

@@ -42,7 +42,7 @@ public class ClienteView extends javax.swing.JFrame {
 
     public void mostrarMensaje (String nombre, String mensajeRecibido) {
         historial.setEditable(true);
-        if ("Servidor".equals(nombre)) { // Si el mensaje es del servidor, no aparece el nombre y el mensaje aparece en naranaja
+        if (cliente.getNombreServidor().equals(nombre)) { // Si el mensaje es del servidor, no aparece el nombre y el mensaje aparece en naranaja
             append(new SimpleDateFormat("HH:mm").format(new Date()) + " ", Color.LIGHT_GRAY);
             append(mensajeRecibido + "\n", Color.ORANGE);
         } else if (cliente.getNombre().equals(nombre)) { // Si el mensaje es del mismo autor, su nombre aparece verde

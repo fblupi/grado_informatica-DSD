@@ -6,12 +6,14 @@ import java.rmi.server.UnicastRemoteObject;
 public class Cliente implements InterfazCliente {
 
     private String nombre;
+    private String nombreServidor;
     private InterfazServidor servidor;
     private ClienteView clienteView;
 
-    public Cliente (String nombre, InterfazServidor servidor) {
+    public Cliente (String nombre, InterfazServidor servidor, String nombreServidor) {
         super();
         this.nombre = nombre;
+        this.nombreServidor = nombreServidor;
         this.servidor = servidor;
         try {
             InterfazCliente stub = (InterfazCliente) UnicastRemoteObject.exportObject((InterfazCliente) this, 0);
@@ -53,6 +55,10 @@ public class Cliente implements InterfazCliente {
         return nombre;
     }
 
+    public String getNombreServidor () {
+        return nombreServidor;
+    }
+
     /**************************************************************************/
 
     public static void main (String args[]) {
@@ -62,7 +68,7 @@ public class Cliente implements InterfazCliente {
         try {
             System.out.println("Buscando el objeto remoto");
             Registry registry = LocateRegistry.getRegistry(args[0]);
-            InterfazServidor instanciaLocal = (InterfazServidor) registry.lookup("Servidor");
+            InterfazServidor instanciaLocal = (InterfazServidor) registry.lookup(args[1]);
             System.out.println("Invocando el objeto remoto");
 
             ClienteView clienteView = new ClienteView();
@@ -70,7 +76,7 @@ public class Cliente implements InterfazCliente {
             CapturarNombre capturarNombre = new CapturarNombre(clienteView, true);
             String nombre = capturarNombre.getNombre();
 
-            Cliente cliente = new Cliente(nombre, instanciaLocal);
+            Cliente cliente = new Cliente(nombre, instanciaLocal, args[1]);
             clienteView.setNombre(nombre);
             clienteView.setCliente(cliente);
             cliente.setClienteView(clienteView);
