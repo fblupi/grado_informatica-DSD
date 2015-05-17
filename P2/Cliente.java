@@ -1,3 +1,4 @@
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -10,31 +11,28 @@ public class Cliente implements InterfazCliente {
     private InterfazServidor servidor;
     private ClienteView clienteView;
 
-    public Cliente (String nombre, InterfazServidor servidor, String nombreServidor) {
+    public Cliente (String nombre, String ipServidor, String nombreServidor) {
         super();
         this.nombre = nombre;
         this.nombreServidor = nombreServidor;
-        this.servidor = servidor;
         try {
-            InterfazCliente stub = (InterfazCliente) UnicastRemoteObject.exportObject((InterfazCliente) this, 0);
-            servidor.registrar(nombre, stub);
-        } catch (RemoteException e) {
+            Registry registry = LocateRegistry.getRegistry(ipServidor); // Se obtiene el RMI registry de la ip del servidor
+            this.servidor = (InterfazServidor) registry.lookup(nombreServidor); // Se busca el servidor
+            InterfazCliente stub = (InterfazCliente) UnicastRemoteObject.exportObject((InterfazCliente) this, 0); // Se crea el stub
+            servidor.registrar(nombre, stub); // Avisa al servidor para que registre al cliente
+        } catch (NotBoundException | RemoteException e) {
             System.err.println("Cliente exception:");
             e.printStackTrace();
         }
     }
 
-    public void setClienteView (ClienteView clienteView) {
-        this.clienteView = clienteView;
-    }
-
     public void mostrarMensaje (String cliente, String mensaje) {
-        clienteView.mostrarMensaje(cliente, mensaje);
+        clienteView.mostrarMensaje(cliente, mensaje); // Se envía el mensaje a la GUI para que lo muestre
     }
 
     public void desconectar () {
         try {
-            servidor.desconectar(nombre);
+            servidor.desconectar(nombre); // Se avisa al servidor para que elimine al cliente
         } catch (RemoteException e) {
             System.err.println("Cliente exception:");
             e.printStackTrace();
@@ -44,11 +42,15 @@ public class Cliente implements InterfazCliente {
 
     public void difundirMensaje (String mensaje) {
         try {
-            servidor.difundirMensaje(nombre, mensaje);
+            servidor.difundirMensaje(nombre, mensaje); // Se avisa al servidor para que difunda un mensaje
         } catch (RemoteException e) {
             System.err.println("Cliente exception:");
             e.printStackTrace();
         }
+    }
+
+    public void setClienteView (ClienteView clienteView) {
+        this.clienteView = clienteView;
     }
 
     public String getNombre () {
@@ -62,30 +64,20 @@ public class Cliente implements InterfazCliente {
     /**************************************************************************/
 
     public static void main (String args[]) {
-        if (System.getSecurityManager() == null) {
+        if (System.getSecurityManager() == null) { // Instalación del gestor de seguridad
             System.setSecurityManager(new SecurityManager());
         }
-        try {
-            System.out.println("Buscando el objeto remoto");
-            Registry registry = LocateRegistry.getRegistry(args[0]);
-            InterfazServidor instanciaLocal = (InterfazServidor) registry.lookup(args[1]);
-            System.out.println("Invocando el objeto remoto");
 
-            ClienteView clienteView = new ClienteView();
+        ClienteView clienteView = new ClienteView(); // Se crea la GUI del cliente
 
-            CapturarNombre capturarNombre = new CapturarNombre(clienteView, true);
-            String nombre = capturarNombre.getNombre();
+        CapturarNombre capturarNombre = new CapturarNombre(clienteView, true); // Se lanza el capturador de nombres
+        String nombre = capturarNombre.getNombre(); // Se obtiene el nombre
 
-            Cliente cliente = new Cliente(nombre, instanciaLocal, args[1]);
-            clienteView.setNombre(nombre);
-            clienteView.setCliente(cliente);
-            cliente.setClienteView(clienteView);
+        Cliente cliente = new Cliente(nombre, args[0], args[1]); // Se crea el cliente
 
-            clienteView.showView();
+        clienteView.setCliente(cliente);  // Se asigna la GUI al cliente y el cliente a la GUI
+        cliente.setClienteView(clienteView);  // Se asigna el cliente a la GUI
 
-        } catch (Exception e) {
-            System.err.println("Cliente exception:");
-            e.printStackTrace();
-        }
+        clienteView.showView(); // Se inicia la GUI
     }
 }

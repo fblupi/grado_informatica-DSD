@@ -28,6 +28,7 @@ public class ClienteView extends javax.swing.JFrame {
 
     public void setCliente (Cliente cliente) {
         this.cliente = cliente;
+        this.setNombre(cliente.getNombre());
     }
     
     public void enviarMensaje () {

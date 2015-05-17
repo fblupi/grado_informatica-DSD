@@ -18,9 +18,9 @@ public class Servidor implements InterfazServidor {
         clientes = new HashMap<String, InterfazCliente>();
         this.nombre = nombre;
         try {
-            registry = LocateRegistry.getRegistry();
-            InterfazServidor stub = (InterfazServidor) UnicastRemoteObject.exportObject((InterfazServidor) this, 0);
-            registry.rebind(this.nombre, stub);
+            registry = LocateRegistry.getRegistry(); // Se obtiene el registro de la máquina donde se lanza
+            InterfazServidor stub = (InterfazServidor) UnicastRemoteObject.exportObject((InterfazServidor) this, 0); // Se crea el stub
+            registry.rebind(this.nombre, stub); // Se exporta y se da un nombre para identificarlo en el RMI registry
         } catch (RemoteException e) {
             System.err.println("Servidor exception:");
             e.printStackTrace();
@@ -29,19 +29,19 @@ public class Servidor implements InterfazServidor {
 
     public void registrar (String nombre, InterfazCliente cliente) {
         try {
-            registry.rebind(nombre, cliente);
+            registry.rebind(nombre, cliente); // Se exporta el stub del cliente y se le da un nombre para identificarlo en el RMI registry
         } catch (RemoteException e) {
             System.err.println("Servidor exception:");
             e.printStackTrace();
         }
-        difundirMensaje(this.nombre, nombre + " se conectó.");
-        clientes.put(nombre, cliente);
+        difundirMensaje(this.nombre, nombre + " se conectó."); // Se difunde el mensaje de que se ha conectado un nuevo cliente
+        clientes.put(nombre, cliente); // Se añade un nuevo cliente al map
     }
 
     public void difundirMensaje (String nombre, String mensaje) {
-        for(String cliente: clientes.keySet()) {
+        for(String cliente: clientes.keySet()) { // Se recorren todos los clientes
             try {
-                clientes.get(cliente).mostrarMensaje(nombre, mensaje);
+                clientes.get(cliente).mostrarMensaje(nombre, mensaje); // Avisa al cliente para que muestre el mensaje
             } catch (RemoteException e) {
                 System.err.println("Servidor exception:");
                 e.printStackTrace();
@@ -51,22 +51,22 @@ public class Servidor implements InterfazServidor {
 
     public void desconectar (String nombre) {
         try {
-            registry.unbind(nombre);
+            registry.unbind(nombre); // Se elimina el stub con el nombre indicado del RMI registry
         } catch (NotBoundException | RemoteException e) {
             System.err.println("Servidor exception:");
             e.printStackTrace();
         }
-        clientes.remove(nombre);
-        difundirMensaje(this.nombre, nombre + " se desconectó.");
+        clientes.remove(nombre); // Se elimina al cliente del map
+        difundirMensaje(this.nombre, nombre + " se desconectó."); // Se difunde el mensaje de que se ha desconectado
     }
 
     /**************************************************************************/
     
     public static void main (String[] args) {
-        if (System.getSecurityManager() == null) {
+        if (System.getSecurityManager() == null) { // Instalación del gestor de seguridad
             System.setSecurityManager(new SecurityManager());
         }
-        Servidor servidor = new Servidor(args[0]);
+        Servidor servidor = new Servidor(args[0]); // Se crea el servidor
     }
 
 }
