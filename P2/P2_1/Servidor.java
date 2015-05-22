@@ -39,7 +39,7 @@ public class Servidor implements InterfazServidor {
     }
 
     public void difundirMensaje (String nombre, String mensaje) {
-        for(String cliente: clientes.keySet()) { // Se recorren todos los clientes
+        for (String cliente: clientes.keySet()) { // Se recorren todos los clientes
             try {
                 clientes.get(cliente).mostrarMensaje(nombre, mensaje); // Avisa al cliente para que muestre el mensaje
             } catch (RemoteException e) {
@@ -58,6 +58,19 @@ public class Servidor implements InterfazServidor {
         }
         clientes.remove(nombre); // Se elimina al cliente del map
         difundirMensaje(this.nombre, nombre + " se desconectó."); // Se difunde el mensaje de que se ha desconectado
+    }
+
+    public boolean nombreCorrecto (String nombre) {
+        if (nombre == null || nombre.length() < 3 || nombre.length() > 10) { // Nombres inválidos
+            return false;
+        }
+        boolean correcto = true;
+        for (String cliente: clientes.keySet()) { // Se recorren todos los clientes
+            if (cliente.equals(nombre)) { // Si ya existe devolverá fallo
+                correcto = false;
+            }
+        }
+        return correcto;
     }
 
     /**************************************************************************/
