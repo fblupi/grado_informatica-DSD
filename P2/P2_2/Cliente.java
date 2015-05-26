@@ -3,6 +3,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.HashMap;
 
 public class Cliente implements InterfazCliente {
 
@@ -10,12 +11,15 @@ public class Cliente implements InterfazCliente {
     private String nombreServidor;
     private InterfazServidor servidor;
     private ClienteView clienteView;
+    private HashMap<String, InterfazCliente> clientes;
 
-    public Cliente (String nombre, InterfazServidor servidor, String nombreServidor) {
+    public Cliente (String nombre, InterfazServidor servidor, String nombreServidor, ClienteView clienteView) {
         super();
         this.nombre = nombre;
         this.nombreServidor = nombreServidor;
         this.servidor = servidor;
+        this.clienteView = clienteView;
+        clientes = new HashMap<String, InterfazCliente>();
         try {
             InterfazCliente stub = (InterfazCliente) UnicastRemoteObject.exportObject((InterfazCliente) this, 0); // Se crea el stub
             servidor.registrar(nombre, stub); // Avisa al servidor para que registre al cliente
@@ -23,6 +27,13 @@ public class Cliente implements InterfazCliente {
             System.err.println("Cliente exception:");
             e.printStackTrace();
         }
+    }
+
+    public void actualizarClientes (HashMap<String, InterfazCliente> clientes) {
+        this.clientes = clientes;
+        //System.out.println(this.clientes.keySet().toArray(new String[this.clientes.size()]).toString());
+        
+        clienteView.actualizarClientes(this.clientes.keySet().toArray(new String[this.clientes.size()]));
     }
 
     public void mostrarMensaje (String cliente, String mensaje) {
@@ -38,7 +49,7 @@ public class Cliente implements InterfazCliente {
         }
         System.exit(0);
     }
-
+/*
     public void difundirMensaje (String mensaje) {
         try {
             servidor.difundirMensaje(nombre, mensaje); // Se avisa al servidor para que difunda un mensaje
@@ -47,10 +58,7 @@ public class Cliente implements InterfazCliente {
             e.printStackTrace();
         }
     }
-
-    public void setClienteView (ClienteView clienteView) {
-        this.clienteView = clienteView;
-    }
+*/
 
     public String getNombre () {
         return nombre;
@@ -80,10 +88,9 @@ public class Cliente implements InterfazCliente {
                 nombre = capturarNombre.getNombre(); // Se obtiene el nombre
             } while (!servidor.nombreCorrecto(nombre));
 
-            Cliente cliente = new Cliente(nombre, servidor, args[1]); // Se crea el cliente
+            Cliente cliente = new Cliente(nombre, servidor, args[1], clienteView); // Se crea el cliente
 
             clienteView.setCliente(cliente);  // Se asigna la GUI al cliente y el cliente a la GUI
-            cliente.setClienteView(clienteView);  // Se asigna el cliente a la GUI
 
             clienteView.showView(); // Se inicia la GUI
         } catch (NotBoundException | RemoteException e) {

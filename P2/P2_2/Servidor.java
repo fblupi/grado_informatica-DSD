@@ -34,10 +34,18 @@ public class Servidor implements InterfazServidor {
             System.err.println("Servidor exception:");
             e.printStackTrace();
         }
-        difundirMensaje(this.nombre, nombre + " se conectó."); // Se difunde el mensaje de que se ha conectado un nuevo cliente
+        //difundirMensaje(this.nombre, nombre + " se conectó."); // Se difunde el mensaje de que se ha conectado un nuevo cliente
         clientes.put(nombre, cliente); // Se añade un nuevo cliente al map
+        for (String nombreCliente: clientes.keySet()) { // Recorro todos los clientes
+            try {
+                clientes.get(nombreCliente).actualizarClientes(clientes); // Actualiza clientes
+            } catch (RemoteException e) {
+                System.err.println("Servidor exception:");
+                e.printStackTrace();
+            }
+        }
     }
-
+/*
     public void difundirMensaje (String nombre, String mensaje) {
         for (String cliente: clientes.keySet()) { // Se recorren todos los clientes
             try {
@@ -48,7 +56,7 @@ public class Servidor implements InterfazServidor {
             }
         }
     }
-
+*/
     public void desconectar (String nombre) {
         try {
             registry.unbind(nombre); // Se elimina el stub con el nombre indicado del RMI registry
@@ -57,7 +65,15 @@ public class Servidor implements InterfazServidor {
             e.printStackTrace();
         }
         clientes.remove(nombre); // Se elimina al cliente del map
-        difundirMensaje(this.nombre, nombre + " se desconectó."); // Se difunde el mensaje de que se ha desconectado
+        for (String nombreCliente: clientes.keySet()) { // Recorro todos los clientes
+            try {
+                clientes.get(nombreCliente).actualizarClientes(clientes); // Actualiza clientes
+            } catch (RemoteException e) {
+                System.err.println("Servidor exception:");
+                e.printStackTrace();
+            }
+        }
+        //difundirMensaje(this.nombre, nombre + " se desconectó."); // Se difunde el mensaje de que se ha desconectado
     }
 
     public boolean nombreCorrecto (String nombre) {
