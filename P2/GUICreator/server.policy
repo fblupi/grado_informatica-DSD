@@ -1,4 +1,0 @@
-grant codeBase "file:/C:/Users/FranciscoJavier/Documents/GitHub/grado_informatica-DSD/P2/P2_1/" {
-    permission java.security.AllPermission;
-};
-
