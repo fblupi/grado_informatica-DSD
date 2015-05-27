@@ -1,6 +1,7 @@
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
+import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.text.AttributeSet;
@@ -8,13 +9,18 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 
-
 public class ChatView extends javax.swing.JFrame {
 
-    private Cliente cliente;
+    private InterfazCliente cliente;
+    private String nombre;
+    private String nombreAmigo;
 
-    public ChatView() {
+    public ChatView(String nombre, InterfazCliente cliente, String nombreAmigo) {
+        this.cliente = cliente;
+        this.nombre = nombre;
+        this.nombreAmigo = nombreAmigo;
         initComponents();
+        setNombre(nombre + ": chat con " + nombreAmigo);
         addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent evt) {
@@ -27,29 +33,33 @@ public class ChatView extends javax.swing.JFrame {
         this.setVisible(true);
     }
     
+    public void close () {
+        dispose();
+    }
+    
     public void setNombre (String nombre) {
         this.setTitle(nombre);
     }
-
-    public void setCliente (Cliente cliente) {
-        this.cliente = cliente;
-        this.setNombre(cliente.getNombre());
-    }
     
     public void enviarMensaje () {
-        
+        if (!"".equals(mensaje.getText())) { // Si el mensaje está vacío no tiene sentido enviarse
+            try {
+                cliente.enviarMensaje(nombreAmigo, mensaje.getText()); 
+            } catch (RemoteException e) {
+                System.err.println("Cliente exception:");
+                e.printStackTrace();
+            }
+            mensaje.setText("");
+        }
     }
     
     public void desconectar () {
-        
+        ((Cliente) cliente).desconectarConCliente(nombreAmigo);
     }
     
     public void mostrarMensaje (String nombre, String mensajeRecibido) {
         historial.setEditable(true);
-        if (cliente.getNombreServidor().equals(nombre)) { // Si el mensaje es del servidor, no aparece el nombre y el mensaje aparece en naranaja
-            append(new SimpleDateFormat("HH:mm").format(new Date()) + " ", Color.LIGHT_GRAY);
-            append(mensajeRecibido + "\n", Color.ORANGE);
-        } else if (cliente.getNombre().equals(nombre)) { // Si el mensaje es del mismo autor, su nombre aparece verde
+        if (this.nombre.equals(nombre)) { // Si el mensaje es del mismo autor, su nombre aparece verde
             append(new SimpleDateFormat("HH:mm").format(new Date()) + " ", Color.LIGHT_GRAY);
             append(nombre + ": ", Color.GREEN);
             append(mensajeRecibido + "\n", Color.BLACK);
@@ -182,4 +192,5 @@ public class ChatView extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextArea mensaje;
     // End of variables declaration//GEN-END:variables
+
 }

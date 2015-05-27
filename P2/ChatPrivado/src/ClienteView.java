@@ -12,10 +12,6 @@ public class ClienteView extends javax.swing.JFrame {
             }
         });
     }
-
-    public String hola () {
-        return "hola";
-    }
     
     public void setNombre (String nombre) {
         this.setTitle(nombre);
@@ -28,11 +24,10 @@ public class ClienteView extends javax.swing.JFrame {
     
     public void desconectar () {
         cliente.desconectar();
-        System.exit(0);
     }
     
     public void actualizarClientes (String[] clientes) {
-        listaUsuarios.setListData(clientes);
+        listaClientes.setListData(clientes);
     }
 
     /**
@@ -47,7 +42,7 @@ public class ClienteView extends javax.swing.JFrame {
         buttonConectar = new javax.swing.JButton();
         buttonDesconectar = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
-        listaUsuarios = new javax.swing.JList();
+        listaClientes = new javax.swing.JList();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -65,12 +60,17 @@ public class ClienteView extends javax.swing.JFrame {
             }
         });
 
-        listaUsuarios.setModel(new javax.swing.AbstractListModel() {
+        listaClientes.setModel(new javax.swing.AbstractListModel() {
             String[] strings = {  };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
-        jScrollPane3.setViewportView(listaUsuarios);
+        listaClientes.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                listaClientesMouseClicked(evt);
+            }
+        });
+        jScrollPane3.setViewportView(listaClientes);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -103,6 +103,10 @@ public class ClienteView extends javax.swing.JFrame {
 
     private void buttonConectarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonConectarActionPerformed
         // TODO add your handling code here:
+        String cliente = (String) listaClientes.getSelectedValue();
+        if (cliente != null) {
+            this.cliente.conectarConCliente(cliente);
+        }
         
     }//GEN-LAST:event_buttonConectarActionPerformed
 
@@ -110,6 +114,15 @@ public class ClienteView extends javax.swing.JFrame {
         // TODO add your handling code here:
         desconectar();
     }//GEN-LAST:event_buttonDesconectarActionPerformed
+
+    private void listaClientesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listaClientesMouseClicked
+        // TODO add your handling code here:
+        javax.swing.JList list = (javax.swing.JList)evt.getSource();
+        if (evt.getClickCount() == 2) { // Se ha hecho doble click
+            String cliente = (String) listaClientes.getSelectedValue();
+            this.cliente.conectarConCliente(cliente);
+        }
+    }//GEN-LAST:event_listaClientesMouseClicked
 
     public void showView () {
         this.setVisible(true);
@@ -119,6 +132,7 @@ public class ClienteView extends javax.swing.JFrame {
     private javax.swing.JButton buttonConectar;
     private javax.swing.JButton buttonDesconectar;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JList listaUsuarios;
+    private javax.swing.JList listaClientes;
     // End of variables declaration//GEN-END:variables
+
 }

@@ -96,4 +96,5 @@ public class CapturarNombreView extends javax.swing.JDialog {
     private javax.swing.JLabel labelNombre;
     private javax.swing.JTextField textNombre;
     // End of variables declaration//GEN-END:variables
+
 }

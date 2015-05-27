@@ -1,3 +1,4 @@
+
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -12,6 +13,7 @@ public class Cliente implements InterfazCliente {
     private InterfazServidor servidor;
     private ClienteView clienteView;
     private HashMap<String, InterfazCliente> clientes;
+    private HashMap<String, ChatView> chats;
 
     public Cliente (String nombre, InterfazServidor servidor, String nombreServidor, ClienteView clienteView) {
         super();
@@ -20,6 +22,7 @@ public class Cliente implements InterfazCliente {
         this.servidor = servidor;
         this.clienteView = clienteView;
         clientes = new HashMap<String, InterfazCliente>();
+        chats = new HashMap<String, ChatView>();
         try {
             InterfazCliente stub = (InterfazCliente) UnicastRemoteObject.exportObject((InterfazCliente) this, 0); // Se crea el stub
             servidor.registrar(nombre, stub); // Avisa al servidor para que registre al cliente
@@ -31,33 +34,69 @@ public class Cliente implements InterfazCliente {
 
     public void actualizarClientes (HashMap<String, InterfazCliente> clientes) {
         this.clientes = clientes;  
-        this.clientes.remove(nombre);
-        clienteView.actualizarClientes(this.clientes.keySet().toArray(new String[this.clientes.size()]));
+        this.clientes.remove(nombre); // No tiene que aparecer su nombre
+        clienteView.actualizarClientes(this.clientes.keySet().toArray(new String[this.clientes.size()])); // Envía un array con todos los nombres
     }
 
-    public void mostrarMensaje (String cliente, String mensaje) {
-        //clienteView.mostrarMensaje(cliente, mensaje); // Se envía el mensaje a la GUI para que lo muestre
+    public void mostrarMensaje (String nombreAmigo, String mensajero, String mensaje) {
+        chats.get(nombreAmigo).mostrarMensaje(mensajero, mensaje); // Se muestra el mensaje en la GUI
+    }
+    
+    public void enviarMensaje (String nombreAmigo, String mensaje) {
+        try {
+            mostrarMensaje(nombreAmigo, nombre, mensaje); // Muestra mensaje en su ventana
+            clientes.get(nombreAmigo).mostrarMensaje(nombre, nombre, mensaje); // Muesta mensaje en la ventana de su amigo
+        } catch (RemoteException e) {
+            System.err.println("Cliente exception:");
+            e.printStackTrace();
+        }
+    }
+    
+    public void conectarConCliente (String nombreAmigo) {
+        if (!chats.containsKey(nombreAmigo)) { // No puede existir una ventana abierta entre esos dos mismos clientes
+            iniciarChat(nombreAmigo); // Inicia ventana chat
+            try {
+                clientes.get(nombreAmigo).iniciarChat(nombre); // Inicia ventana chat en su amigo
+            } catch (RemoteException e) {
+                System.err.println("Cliente exception:");
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    public void desconectarConCliente (String nombreAmigo) {
+        try {
+            cerrarChat(nombreAmigo); // Cierra ventana chat
+            clientes.get(nombreAmigo).cerrarChat(nombre); // Cierra ventana chat de su amigo
+        } catch (RemoteException e) {
+            System.err.println("Cliente exception:");
+            e.printStackTrace();
+        }
+    }
+    
+    public void iniciarChat (String nombreAmigo) {
+        ChatView chatView = new ChatView(nombre, this, nombreAmigo); // Inicia chat
+        chats.put(nombreAmigo, chatView); // Guarda chat en el map
+        chatView.showView(); // Muestra la ventana
+    }
+    
+    public void cerrarChat (String nombreAmigo) {
+        chats.get(nombreAmigo).close(); // Cierra la ventana
+        chats.remove(nombreAmigo); // Borra el chat del map
     }
 
     public void desconectar () {
-        try {
-            servidor.desconectar(nombre); // Se avisa al servidor para que elimine al cliente
-        } catch (RemoteException e) {
-            System.err.println("Cliente exception:");
-            e.printStackTrace();
-        }
-        System.exit(0);
-    }
-/*
-    public void difundirMensaje (String mensaje) {
-        try {
-            servidor.difundirMensaje(nombre, mensaje); // Se avisa al servidor para que difunda un mensaje
-        } catch (RemoteException e) {
-            System.err.println("Cliente exception:");
-            e.printStackTrace();
+        if (chats.isEmpty()) { // No se puede desconectar si no ha cerrado todas las ventanas
+            try {
+                servidor.desconectar(nombre); // Se avisa al servidor para que elimine al cliente
+            } catch (RemoteException e) {
+                System.err.println("Cliente exception:");
+                e.printStackTrace();
+            }
+            System.exit(0);
         }
     }
-*/
+
     public String getNombre () {
         return nombre;
     }
@@ -96,4 +135,5 @@ public class Cliente implements InterfazCliente {
             e.printStackTrace();
         }
     }
+    
 }

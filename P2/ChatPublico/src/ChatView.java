@@ -8,7 +8,6 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 
-
 public class ChatView extends javax.swing.JFrame {
 
     private Cliente cliente;
@@ -186,4 +185,5 @@ public class ChatView extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextArea mensaje;
     // End of variables declaration//GEN-END:variables
+
 }

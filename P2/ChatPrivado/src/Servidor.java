@@ -1,10 +1,10 @@
+
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
-
 
 public class Servidor implements InterfazServidor {
 
@@ -33,7 +33,6 @@ public class Servidor implements InterfazServidor {
             System.err.println("Servidor exception:");
             e.printStackTrace();
         }
-        //difundirMensaje(this.nombre, nombre + " se conectó."); // Se difunde el mensaje de que se ha conectado un nuevo cliente
         clientes.put(nombre, cliente); // Se añade un nuevo cliente al map
         for (String nombreCliente: clientes.keySet()) { // Recorro todos los clientes
             try {
@@ -44,18 +43,7 @@ public class Servidor implements InterfazServidor {
             }
         }
     }
-/*
-    public void difundirMensaje (String nombre, String mensaje) {
-        for (String cliente: clientes.keySet()) { // Se recorren todos los clientes
-            try {
-                clientes.get(cliente).mostrarMensaje(nombre, mensaje); // Avisa al cliente para que muestre el mensaje
-            } catch (RemoteException e) {
-                System.err.println("Servidor exception:");
-                e.printStackTrace();
-            }
-        }
-    }
-*/
+    
     public void desconectar (String nombre) {
         try {
             registry.unbind(nombre); // Se elimina el stub con el nombre indicado del RMI registry
@@ -72,7 +60,6 @@ public class Servidor implements InterfazServidor {
                 e.printStackTrace();
             }
         }
-        //difundirMensaje(this.nombre, nombre + " se desconectó."); // Se difunde el mensaje de que se ha desconectado
     }
 
     public boolean nombreCorrecto (String nombre) {
