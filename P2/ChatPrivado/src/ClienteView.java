@@ -14,7 +14,8 @@ public class ClienteView extends javax.swing.JFrame {
     }
     
     public void setNombre (String nombre) {
-        this.setTitle(nombre);
+        this.setTitle("Oh, my chat! - " + nombre);
+        nombreUsuario.setText("Bienvenido, " + nombre);
     }
 
     public void setCliente (Cliente cliente) {
@@ -43,9 +44,13 @@ public class ClienteView extends javax.swing.JFrame {
         buttonDesconectar = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
         listaClientes = new javax.swing.JList();
+        nombreUsuario = new javax.swing.JLabel();
+        logo = new javax.swing.JLabel();
+        labelUsuarios = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        buttonConectar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         buttonConectar.setText("Conectar");
         buttonConectar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -53,6 +58,7 @@ public class ClienteView extends javax.swing.JFrame {
             }
         });
 
+        buttonDesconectar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         buttonDesconectar.setText("Desconectar");
         buttonDesconectar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -60,6 +66,7 @@ public class ClienteView extends javax.swing.JFrame {
             }
         });
 
+        listaClientes.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         listaClientes.setModel(new javax.swing.AbstractListModel() {
             String[] strings = {  };
             public int getSize() { return strings.length; }
@@ -72,6 +79,17 @@ public class ClienteView extends javax.swing.JFrame {
         });
         jScrollPane3.setViewportView(listaClientes);
 
+        nombreUsuario.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        nombreUsuario.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        nombreUsuario.setText("Bienvenido, usuario");
+        nombreUsuario.setToolTipText("");
+
+        logo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/minilogo.png"))); // NOI18N
+
+        labelUsuarios.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        labelUsuarios.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        labelUsuarios.setText("Usuarios conectados");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -79,23 +97,39 @@ public class ClienteView extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(buttonConectar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(buttonDesconectar, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(buttonConectar, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(buttonDesconectar, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(logo)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(36, 36, 36)
+                                .addComponent(labelUsuarios, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addComponent(nombreUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(nombreUsuario, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(labelUsuarios))
+                    .addComponent(logo, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(buttonDesconectar, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(buttonConectar, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(11, 11, 11))
         );
 
         pack();
@@ -132,7 +166,10 @@ public class ClienteView extends javax.swing.JFrame {
     private javax.swing.JButton buttonConectar;
     private javax.swing.JButton buttonDesconectar;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JLabel labelUsuarios;
     private javax.swing.JList listaClientes;
+    private javax.swing.JLabel logo;
+    private javax.swing.JLabel nombreUsuario;
     // End of variables declaration//GEN-END:variables
 
 }

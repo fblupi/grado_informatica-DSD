@@ -20,7 +20,8 @@ public class ChatView extends javax.swing.JFrame {
         this.nombre = nombre;
         this.nombreAmigo = nombreAmigo;
         initComponents();
-        setNombre(nombre + ": chat con " + nombreAmigo);
+        setNombre("Oh, my chat! - " + nombre);
+        labelNombreAmigo.setText("Chat con " + nombreAmigo);
         addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent evt) {
@@ -99,6 +100,8 @@ public class ChatView extends javax.swing.JFrame {
         historial = new javax.swing.JTextPane();
         buttonEnviar = new javax.swing.JButton();
         buttonDesconectar = new javax.swing.JButton();
+        logo = new javax.swing.JLabel();
+        labelNombreAmigo = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -114,6 +117,7 @@ public class ChatView extends javax.swing.JFrame {
         historial.setEditable(false);
         jScrollPane2.setViewportView(historial);
 
+        buttonEnviar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         buttonEnviar.setText("Enviar");
         buttonEnviar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -121,12 +125,19 @@ public class ChatView extends javax.swing.JFrame {
             }
         });
 
+        buttonDesconectar.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         buttonDesconectar.setText("Desconectar");
         buttonDesconectar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonDesconectarActionPerformed(evt);
             }
         });
+
+        logo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/cabecera.png"))); // NOI18N
+
+        labelNombreAmigo.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        labelNombreAmigo.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        labelNombreAmigo.setText("Chat con usuario");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -137,18 +148,29 @@ public class ChatView extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 246, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 254, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(buttonEnviar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(buttonDesconectar, javax.swing.GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE))))
+                            .addComponent(buttonDesconectar, javax.swing.GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(logo)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(labelNombreAmigo)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 176, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(logo)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(labelNombreAmigo)
+                        .addGap(31, 31, 31)))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -190,6 +212,8 @@ public class ChatView extends javax.swing.JFrame {
     private javax.swing.JTextPane historial;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JLabel labelNombreAmigo;
+    private javax.swing.JLabel logo;
     private javax.swing.JTextArea mensaje;
     // End of variables declaration//GEN-END:variables
 

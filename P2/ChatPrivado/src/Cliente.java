@@ -111,7 +111,6 @@ public class Cliente implements InterfazCliente {
         if (System.getSecurityManager() == null) { // Instalación del gestor de seguridad
             System.setSecurityManager(new SecurityManager());
         }
-
         try {
             Registry registry = LocateRegistry.getRegistry(args[0]); // Se obtiene el RMI registry de la ip del servidor
             InterfazServidor servidor = (InterfazServidor) registry.lookup(args[1]); // Se busca el servidor
@@ -119,7 +118,6 @@ public class Cliente implements InterfazCliente {
             ClienteView clienteView = new ClienteView(); // Se crea la GUI del cliente
 
             String nombre = "";
-
             do {
                 CapturarNombreView capturarNombre = new CapturarNombreView(clienteView, true); // Se lanza el capturador de nombres
                 nombre = capturarNombre.getNombre(); // Se obtiene el nombre
@@ -128,7 +126,6 @@ public class Cliente implements InterfazCliente {
             Cliente cliente = new Cliente(nombre, servidor, args[1], clienteView); // Se crea el cliente
 
             clienteView.setCliente(cliente);  // Se asigna la GUI al cliente y el cliente a la GUI
-
             clienteView.showView(); // Se inicia la GUI
         } catch (NotBoundException | RemoteException e) {
             System.err.println("Cliente exception:");
