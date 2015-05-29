@@ -1,10 +1,12 @@
-# Diseño y Desarrollo de Sistemas Distribuidos #
+# Diseño y Desarrollo de Sistemas Distribuidos
 
-### Datos ###
+### Datos
 
 * Prácticas de la asignatura Diseño y Desarrollo de Sistemas Distribuidos
-* Versión 0.1
+	* Práctica 1: Agenda distribuida con RPC
+	* Práctica 2: Chat público y privado con RMI
+* Versión 1.0
 
-### Autores ###
+### Autor
 
 * Francisco Javier Bolívar Lupiáñez
