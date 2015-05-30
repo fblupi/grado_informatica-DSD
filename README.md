@@ -3,9 +3,11 @@
 ### Datos
 
 * Prácticas de la asignatura Diseño y Desarrollo de Sistemas Distribuidos
-	* Práctica 1: Agenda distribuida con RPC
-	* Práctica 2: Chat público y privado con RMI
-* Versión 1.0
+
+### Índice
+
+* Práctica 1: Agenda distribuida con RPC
+* Práctica 2: Chat público y privado con RMI
 
 ### Autor
 
